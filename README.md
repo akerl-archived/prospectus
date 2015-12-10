@@ -8,7 +8,9 @@ prospectus
 [![Code Quality](https://img.shields.io/codacy/36b84b3bc7b24cd4991c4753f7788850.svg)](https://www.codacy.com/app/akerl/prospectus)
 [![MIT Licensed](https://img.shields.io/badge/license-MIT-green.svg)](https://tldrlegal.com/license/mit-license)
 
-Write short scripts in a simple DSL and use the prospectus tool to check for changes in expected vs. actual state
+Write short scripts in a simple DSL and use the prospectus tool to check for changes in expected vs. actual state.
+
+I use this for checking my [homebrew tap](https://github.com/halyard/homebrew-formulae) and [ArchLinux packages](https://github.com/amylum) for outdated package versions: it compares the version I'm packaging now against the upstream latest version.
 
 ## Usage
 
