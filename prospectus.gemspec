@@ -3,8 +3,8 @@ Gem::Specification.new do |s|
   s.version     = '0.0.1'
   s.date        = Time.now.strftime('%Y-%m-%d')
 
-  s.summary     = 'DSL and tool for checking for state changes'
-  s.description = "DSL and tool for checking for state changes"
+  s.summary     = 'Tool and DSL for checking expected vs actual state'
+  s.description = "Tool and DSL for checking expected vs actual state"
   s.authors     = ['Les Aker']
   s.email       = 'me@lesaker.org'
   s.homepage    = 'https://github.com/akerl/prospectus'

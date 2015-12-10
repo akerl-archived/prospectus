@@ -8,7 +8,7 @@ prospectus
 [![Code Quality](https://img.shields.io/codacy/.svg)](https://www.codacy.com/app/akerl/prospectus)
 [![MIT Licensed](https://img.shields.io/badge/license-MIT-green.svg)](https://tldrlegal.com/license/mit-license)
 
-DSL and tool for checking for state changes
+Write short scripts in a simple DSL and use the prospectus tool to check for changes in expected vs. actual state
 
 ## Usage
 
