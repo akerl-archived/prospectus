@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+
+require 'prospectus'
+require 'mercenary'
+
+Mercenary.program(:prospectus) do |p|
+  p.version Prospectus::VERSION
+  p.description 'Tool and DSL for checking expected vs actual state'
+  p.syntax 'prospectus [options]'
+
+  # rubocop:disable Metrics/LineLength
+  p.option :directory, '-d', '--directory', 'Directory to check for .prospectus file'
+  # rubocop:enable Metrics/LineLength
+
+  p.action do |_, options|
+  end
+end
