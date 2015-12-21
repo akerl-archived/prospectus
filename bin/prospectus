@@ -13,6 +13,8 @@ Mercenary.program(:prospectus) do |p|
   # rubocop:enable Metrics/LineLength
 
   p.action do |_, options|
-    p Prospectus.load(options).check
+    Prospectus.load_from_file(options).check.each do |x|
+      puts "#{x.name}: #{x.actual} / #{x.expected}"
+    end
   end
 end

@@ -2,10 +2,20 @@ module Prospectus
   ##
   # Define item objects that defined expected vs actual state
   class Item
-    attr_accessor :name, :expected, :actual
-
     def initialize(params = {})
       @options = params
+    end
+
+    def name
+      @name ||= File.basename Dir.pwd
+    end
+
+    def expected
+      @expected || fail("No expected state was loaded for #{name}")
+    end
+
+    def actual
+      @actual || fail("No actual state was loaded for #{name}")
     end
   end
 
@@ -17,24 +27,24 @@ module Prospectus
     end
 
     def name(value)
-      @item.name = value
+      @item.instance_variable_set(:@name, value)
     end
 
     def expected(&block)
-      @item.expected = state(&block)
+      state(:@expected, &block)
     end
 
     def actual(&block)
-      @item.actual = state(&block)
+      state(:@actual, &block)
     end
 
     private
 
-    def state(&block)
-      state = Prospectus::State.new
-      dsl = Prosepectus::StateDSL.new(state)
+    def state(name, &block)
+      state = State.new
+      dsl = StateDSL.new(state)
       dsl.instance_eval(&block)
-      state.version
+      @item.instance_variable_set(name, state.version)
     end
   end
 end
