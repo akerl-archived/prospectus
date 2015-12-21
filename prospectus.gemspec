@@ -1,6 +1,9 @@
+$:.unshift File.expand_path('../lib/', __FILE__)
+require 'prospectus/version'
+
 Gem::Specification.new do |s|
   s.name        = 'prospectus'
-  s.version     = '0.0.1'
+  s.version     = Prospectus::VERSION
   s.date        = Time.now.strftime('%Y-%m-%d')
 
   s.summary     = 'Tool and DSL for checking expected vs actual state'

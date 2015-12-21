@@ -13,5 +13,6 @@ Mercenary.program(:prospectus) do |p|
   # rubocop:enable Metrics/LineLength
 
   p.action do |_, options|
+    p Prospectus.load(options).check
   end
 end
