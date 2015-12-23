@@ -22,6 +22,7 @@ module Prospectus
 end
 
 require 'prospectus/version'
+require 'prospectus/module'
 require 'prospectus/list'
 require 'prospectus/item'
 require 'prospectus/state'
