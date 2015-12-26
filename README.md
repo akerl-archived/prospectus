@@ -14,6 +14,50 @@ I use this for checking my [homebrew tap](https://github.com/halyard/homebrew-fo
 
 ## Usage
 
+This gem reads a "./.prospectus" file to determine expected/actual state. A prospectus file can be pretty lightweight:
+
+```
+item do
+  name 'zlib'
+
+  expected do
+    github_release
+    repo 'madler/zlib'
+    regex /^v(.*)$/
+  end
+
+  actual do
+    git_tag
+    regex /^(.*)-\d+$/
+  end
+end
+```
+
+Prospectus works by letting you define "items", each of which have an "expected" and "actual" block. You can specify a "name", as above, otherwise it will infer the name from the directory containing the prospectus file.
+
+The expected/actual blocks first define the module to be used, and then define any configuration for that module.
+
+To run the check, just run `prospectus` in the directory with the .prospectus file, or use `prospectus -d /path/to/directory`.
+
+## Included Modules
+
+### static_test
+
+Used for testing, this allows you to manually declare a state:
+
+```
+item do
+  expected do
+    static_test
+    set '0.0.3'
+  end
+  actual do
+    static_test
+    set '0.0.1'
+  end
+end
+```
+
 ## Installation
 
     gem install prospectus
