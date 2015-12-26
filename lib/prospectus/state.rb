@@ -2,12 +2,10 @@ module Prospectus
   ##
   # Define a state object that supports modular checks
   class State
+    attr_accessor :value
+
     def initialize(params = {})
       @options = params
-    end
-
-    def version
-      '0.0.2'
     end
   end
 

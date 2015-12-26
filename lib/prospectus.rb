@@ -6,11 +6,12 @@ module Prospectus
   class << self
     ##
     # Insert a helper .new() method for creating a new Cache object
-
     def new(*args)
       self::List.new(*args)
     end
 
+    ##
+    # Method for loading list from DSL
     def load_from_file(params = {})
       path = params[:directory] || DEFAULT_PATH
       list = List.new

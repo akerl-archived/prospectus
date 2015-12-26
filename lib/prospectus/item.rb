@@ -44,7 +44,7 @@ module Prospectus
       state = State.new
       dsl = StateDSL.new(state)
       dsl.instance_eval(&block)
-      @item.instance_variable_set(name, state.version)
+      @item.instance_variable_set(name, state.value)
     end
   end
 end
