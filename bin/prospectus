@@ -8,9 +8,11 @@ Mercenary.program(:prospectus) do |p|
   p.description 'Tool and DSL for checking expected vs actual state'
   p.syntax 'prospectus [options]'
 
-  p.option :directory, '-d', '--directory', 'Change to directory before loading'
+  # rubocop:disable Metrics/LineLength
+  p.option :directory, '-d DIR', '--directory DIR', 'Change to directory before loading'
   p.option :good_only, '-g', '--good', 'Show only items with good state'
   p.option :all, '-a', '--all', 'Show all items'
+  # rubocop:enable Metrics/LineLength
 
   p.action do |_, options|
     options[:directory] ||= '.'
