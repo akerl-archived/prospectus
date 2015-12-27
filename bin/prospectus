@@ -8,12 +8,10 @@ Mercenary.program(:prospectus) do |p|
   p.description 'Tool and DSL for checking expected vs actual state'
   p.syntax 'prospectus [options]'
 
-  # rubocop:disable Metrics/LineLength
-  p.option :directory, '-d', '--directory', 'Directory to check for .prospectus file'
-  # rubocop:enable Metrics/LineLength
+  p.option :directory, '-d', '--directory', 'Change to directory before loading'
 
   p.action do |_, options|
-    options[:directory] ||= Dir.pwd
+    options[:directory] ||= '.'
     Dir.chdir(options[:directory]) do
       Prospectus.load_from_file(options).check.each do |x|
         puts "#{x.name}: #{x.actual} / #{x.expected}"

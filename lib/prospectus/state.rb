@@ -12,16 +12,16 @@ module Prospectus
   ##
   # DSL for wrapping eval of states
   class StateDSL
-    def initialize(state)
+    def initialize(state, params)
       @state = state
-      @extended = false
+      @options = params
     end
 
     def method_missing(method, *args, &block)
-      return super if @extended
-      module_obj = Prospectus::Module.find(method)
-      return super unless module_obj
-      extend module_obj
+      return super if @module
+      @module = Prospectus::Module.find(method)
+      return super unless @module
+      extend @module
     end
   end
 end

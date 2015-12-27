@@ -18,13 +18,14 @@ module Prospectus
   ##
   # DSL for wrapping eval of list files
   class ListDSL
-    def initialize(list)
+    def initialize(list, params)
       @list = list
+      @options = params
     end
 
     def item(&block)
-      item = Item.new
-      dsl = ItemDSL.new(item)
+      item = Item.new(@options)
+      dsl = ItemDSL.new(item, @options)
       dsl.instance_eval(&block)
       @list.items << item
     end
