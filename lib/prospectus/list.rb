@@ -11,7 +11,11 @@ module Prospectus
     end
 
     def check
-      items
+      all, good_only = @options.values_at(:all, :good_only)
+      items.select do |x|
+        match = x.expected == x.actual
+        true if all || (!match ^ good_only)
+      end
     end
   end
 
