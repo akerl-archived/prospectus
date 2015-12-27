@@ -11,15 +11,13 @@ module LogCabin
     ##
     # Pull state from a GitHub tag
     module UrlXpath
+      include Prospectus.helpers.find(:regex)
+
       def load!
         fail('No url provided') unless @url
         fail('No xpath provided') unless @xpath
         text = parse_page
-        if @find
-          fail('Text does not match regex') unless text.match(@find)
-          text.sub!(@find, @replace)
-        end
-        @state.value = text
+        @state.value = regex_helper(text)
       end
 
       private
@@ -35,11 +33,6 @@ module LogCabin
 
       def xpath(value)
         @xpath = value
-      end
-
-      def regex(find, replace = '\1')
-        @find = find
-        @replace = replace
       end
     end
   end

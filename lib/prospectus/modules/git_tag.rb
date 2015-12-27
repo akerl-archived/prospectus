@@ -3,20 +3,11 @@ module LogCabin
     ##
     # Pull state from a git tag
     module GitTag
+      include Prospectus.helpers.find(:regex)
+
       def load!
-        tag = `git describe --tags`.chomp
-        if @find
-          fail('Tag does not match regex') unless tag.match(@find)
-          tag.sub!(@find, @replace)
-        end
-        @state.value = tag
-      end
-
-      private
-
-      def regex(find, replace = '\1')
-        @find = find
-        @replace = replace
+        tag = `git describe --tags --abbrev=0`.chomp
+        @state.value = regex_helper(tag)
       end
     end
   end

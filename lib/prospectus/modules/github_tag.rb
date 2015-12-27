@@ -6,13 +6,11 @@ module LogCabin
     ##
     # Pull state from a GitHub tag
     module GithubTag
+      include Prospectus.helpers.find(:regex)
+
       def load!
         tag = latest_tag
-        if @find
-          fail('Tag does not match regex') unless tag.match(@find)
-          tag.sub!(@find, @replace)
-        end
-        @state.value = tag
+        @state.value = regex_helper(tag)
       end
 
       private
@@ -28,11 +26,6 @@ module LogCabin
 
       def repo(value)
         @repo = value
-      end
-
-      def regex(find, replace = '\1')
-        @find = find
-        @replace = replace
       end
     end
   end
