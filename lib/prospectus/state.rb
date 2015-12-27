@@ -19,7 +19,7 @@ module Prospectus
 
     def method_missing(method, *args, &block)
       return super if @module
-      @module = Prospectus::Module.find(method)
+      @module = Prospectus.modules.find(method)
       return super unless @module
       extend @module
     end

@@ -1,3 +1,5 @@
+require 'logcabin'
+
 ##
 # Tool and DSL for checking expected vs actual state
 module Prospectus
@@ -19,11 +21,28 @@ module Prospectus
       dsl.instance_eval(File.read(params[:file]), params[:file])
       list
     end
+
+    def modules
+      @modules ||= LogCabin.new(load_path: load_path(:modules))
+    end
+
+    def helpers
+      @helpers ||= LogCabin.new(load_path: load_path(:helpers))
+    end
+
+    private
+
+    def gem_dir
+      Gem::Specification.find_by_name('prospectus').gem_dir
+    end
+
+    def load_path(type)
+      File.join(gem_dir, 'lib', 'prospectus', type.to_s)
+    end
   end
 end
 
 require 'prospectus/version'
-require 'prospectus/module'
 require 'prospectus/list'
 require 'prospectus/item'
 require 'prospectus/state'
