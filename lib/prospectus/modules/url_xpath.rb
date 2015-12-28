@@ -1,8 +1,4 @@
-begin
-  require 'nokogiri'
-rescue LoadError
-  raise('The url_xpath module requires the nokogiri gem')
-end
+Prospectus.extra_dep('url_xpath', 'nokogiri')
 
 require 'open-uri'
 

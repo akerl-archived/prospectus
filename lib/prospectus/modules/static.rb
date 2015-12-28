@@ -1,9 +1,10 @@
 module LogCabin
   module Modules
     ##
-    # Simple test class, uses "set 'value'" to declare value
-    module StaticTest
+    # Simple text class, uses "set 'value'" to declare value
+    module Static
       def load!
+        fail('Must use `set` to provide a value') unless @value
         @state.value = @value
       end
 

@@ -30,6 +30,12 @@ module Prospectus
       @helpers ||= LogCabin.new(load_path: load_path(:helpers))
     end
 
+    def extra_dep(name, dep)
+      require dep
+    rescue LoadError
+      raise("The #{name} module requires the #{dep} gem")
+    end
+
     private
 
     def gem_dir
