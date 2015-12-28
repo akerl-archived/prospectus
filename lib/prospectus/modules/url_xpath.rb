@@ -20,7 +20,7 @@ module LogCabin
 
       def parse_page
         page = Nokogiri::HTML(open(@url)) { |config| config.strict.nonet }
-        page.xpath(@xpath).text
+        page.xpath(@xpath).text.strip
       end
 
       def url(value)
