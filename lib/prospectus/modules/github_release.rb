@@ -4,7 +4,7 @@ require 'open-uri'
 module LogCabin
   module Modules
     ##
-    # Pull state from a GitHub tag
+    # Pull state from a GitHub release
     module GithubRelease
       include Prospectus.helpers.find(:regex)
 
