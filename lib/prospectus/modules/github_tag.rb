@@ -7,21 +7,17 @@ module LogCabin
     # Pull state from a GitHub tag
     module GithubTag
       include Prospectus.helpers.find(:regex)
+      include Prospectus.helpers.find(:github_api)
 
       def load!
-        tag = latest_tag
+        fail('No repo specified') unless @repo
         @state.value = regex_helper(tag)
       end
 
       private
 
-      def latest_tag
-        JSON.load(open(url)).first['name']
-      end
-
-      def url
-        fail('No repo specified') unless @repo
-        @url ||= "https://api.github.com/repos/#{@repo}/tags"
+      def tag
+        @tag ||= github_api.tags(@repo).first.name
       end
 
       def repo(value)

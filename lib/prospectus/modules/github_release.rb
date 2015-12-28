@@ -7,21 +7,17 @@ module LogCabin
     # Pull state from a GitHub release
     module GithubRelease
       include Prospectus.helpers.find(:regex)
+      include Prospectus.helpers.find(:github_api)
 
       def load!
-        release = latest_release
+        fail('No repo specified') unless @repo
         @state.value = regex_helper(release)
       end
 
       private
 
-      def latest_release
-        JSON.load(open(url))['tag_name']
-      end
-
-      def url
-        fail('No repo specified') unless @repo
-        @url ||= "https://api.github.com/repos/#{@repo}/releases/latest"
+      def release
+        @release ||= github_api.latest_release(@repo).tag_name
       end
 
       def repo(value)
