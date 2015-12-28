@@ -16,7 +16,7 @@ module LogCabin
       private
 
       def latest_release
-        JSON.load(open(url))['name']
+        JSON.load(open(url))['tag_name']
       end
 
       def url

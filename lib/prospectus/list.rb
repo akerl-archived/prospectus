@@ -32,6 +32,7 @@ module Prospectus
       dsl = ItemDSL.new(item, @options)
       dsl.instance_eval(&block)
       @list.items << item
+      item.list.items.each { |x| @list.items << x }
     end
   end
 end

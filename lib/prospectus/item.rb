@@ -2,8 +2,11 @@ module Prospectus
   ##
   # Define item objects that defined expected vs actual state
   class Item
+    attr_reader :list
+
     def initialize(params = {})
       @options = params
+      @list = List.new(params)
     end
 
     def name
@@ -37,6 +40,14 @@ module Prospectus
 
     def actual(&block)
       state(:@actual, &block)
+    end
+
+    def deps(&block)
+      dsl = ListDSL.new(@item.list, @options)
+      dsl.instance_eval(&block)
+      @item.list.items.each do |dep|
+        dep.instance_variable_set(:@name, "#{@item.name}::#{dep.name}")
+      end
     end
 
     private
