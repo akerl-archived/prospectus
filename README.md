@@ -72,6 +72,29 @@ actual do
 end
 ```
 
+### git_hash
+
+Checks the git hash of a local repository. Supports the chdir helper.
+
+Will return the short hash unless the `long` argument is provided.
+
+Primarily used for checking git submodules.
+
+```
+# Returns the short hash
+actual do
+  git_hash
+  dir 'submodules/my-important-other-repo'
+end
+
+# Returns the full hash
+actual do
+  git_hash
+  long
+  dir 'submodules/other-repo'
+end
+```
+
 ### github_release
 
 This checks the latest GitHub release for a repo (must be a real Release, not just a tag. Use github_tag if there isn't a Release). Supports the Regex helper and uses the GitHub API helper for API access.
@@ -181,6 +204,17 @@ end
 actual do
   git_tag
   regex /^v(\d+)_(\d+)_(\d+)$/, '\1.\2.\3'
+end
+```
+
+### chdir
+
+Used to chdir to a different directory before loading the state.
+
+```
+actual do
+  git_hash
+  dir 'submodules/important_repo'
 end
 ```
 
