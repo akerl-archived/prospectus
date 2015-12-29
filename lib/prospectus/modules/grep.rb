@@ -7,6 +7,7 @@ module LogCabin
 
       def load!
         fail('No file specified') unless @file
+        @find ||= '.*'
         line = read_file
         @state.value = regex_helper(line)
       end
