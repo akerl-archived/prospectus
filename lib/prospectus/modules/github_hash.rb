@@ -3,29 +3,30 @@ module LogCabin
     ##
     # Pull state from the latest GitHub commit
     module GithubHash
+      include Prospectus.helpers.find(:github_api)
+
       def load!
-        repo_url = _repo_url
-        repo_xpath = _xpath
-        Prospectus::State.from_block(@options, @state) do
-          url_xpath
-          url repo_url
-          xpath repo_xpath
-        end
+        fail('No repo specified') unless @repo
+        @branch ||= 'master'
+        @state.value = @long ? hash : hash.slice(0, 7)
       end
 
       private
+
+      def hash
+        @hash ||= github_api.branch(@repo, @branch).commit.sha
+      end
 
       def repo(value)
         @repo = value
       end
 
-      def _repo_url
-        fail('No repo provided') unless @repo
-        "https://github.com/#{@repo}"
+      def branch(value)
+        @branch = value
       end
 
-      def _xpath
-        '//a[@class="commit-tease-sha"]'
+      def long
+        @long = true
       end
     end
   end

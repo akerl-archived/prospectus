@@ -119,12 +119,20 @@ end
 
 ### github_hash
 
-This checks the latest commit hash on GitHub. Uses the url_xpath module under the hood, so it requires nokogiri. Designed to be used alongside the git_hash module for comparing local submodules with upstream commits.
+This checks the latest commit hash on GitHub. Uses the github_api helper, which requires octoauth. Designed to be used alongside the git_hash module for comparing local submodules with upstream commits.
+
+Will give the 7 character short hash unless "long" is specified.
 
 ```
 expected do
   github_hash
   repo 'akerl/keys'
+end
+
+expected do
+  github_hash
+  repo 'akerl/keys'
+  long
 end
 ```
 
