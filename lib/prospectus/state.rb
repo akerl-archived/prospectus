@@ -7,6 +7,14 @@ module Prospectus
     def initialize(params = {})
       @options = params
     end
+
+    def self.from_block(params = {}, state = nil, &block)
+      state ||= State.new(params)
+      dsl = StateDSL.new(state, params)
+      dsl.instance_eval(&block)
+      dsl.load!
+      state
+    end
   end
 
   ##

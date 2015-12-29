@@ -117,6 +117,17 @@ expected do
 end
 ```
 
+### github_hash
+
+This checks the latest commit hash on GitHub. Uses the url_xpath module under the hood, so it requires nokogiri. Designed to be used alongside the git_hash module for comparing local submodules with upstream commits.
+
+```
+expected do
+  github_hash
+  repo 'akerl/keys'
+end
+```
+
 ### grep
 
 This checks a local file's contents. Supports the Regex helper, and uses the provided regex pattern to match which line of the file to use. If no regex is specified, it will use the full first line of the file.

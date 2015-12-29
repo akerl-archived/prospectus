@@ -53,10 +53,7 @@ module Prospectus
     private
 
     def state(name, &block)
-      state = State.new(@options)
-      dsl = StateDSL.new(state, @options)
-      dsl.instance_eval(&block)
-      dsl.load!
+      state = Prospectus::State.from_block(@options, &block)
       @item.instance_variable_set(name, state.value)
     end
   end
