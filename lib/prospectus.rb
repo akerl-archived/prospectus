@@ -15,10 +15,10 @@ module Prospectus
     ##
     # Method for loading list from DSL
     def load_from_file(params = {})
-      params[:file] ||= DEFAULT_FILE
+      file = params[:file] || DEFAULT_FILE
       list = List.new(params)
       dsl = ListDSL.new(list, params)
-      dsl.instance_eval(File.read(params[:file]), params[:file])
+      dsl.instance_eval(File.read(file), file)
       list
     end
 
