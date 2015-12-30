@@ -10,7 +10,10 @@ module Prospectus
     end
 
     def name
-      @name ||= File.basename Dir.pwd
+      return @name if @name
+      @name = File.basename Dir.pwd
+      @name << "::#{File.basename @options[:file]}" if @options[:file]
+      @name
     end
 
     def expected

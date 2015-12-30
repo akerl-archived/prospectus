@@ -3,6 +3,18 @@
 require 'prospectus'
 require 'mercenary'
 
+def load_list(params)
+  return Prospectus.load_from_file(params).check if File.exist? '.prospectus'
+  fail('No .prospectus/.prospectus.d found') unless Dir.exist? '.prospectus.d'
+  files = Dir.glob('.prospectus.d/*')
+  fail('No files in .prospectus.d') if files.empty?
+  results = files.map do |x|
+    params = { file: x }.merge(params)
+    Prospectus.load_from_file(params).check
+  end
+  results.flatten
+end
+
 Mercenary.program(:prospectus) do |p|
   p.version Prospectus::VERSION
   p.description 'Tool and DSL for checking expected vs actual state'
@@ -17,7 +29,8 @@ Mercenary.program(:prospectus) do |p|
   p.action do |_, options|
     options[:directory] ||= '.'
     Dir.chdir(options[:directory]) do
-      Prospectus.load_from_file(options).check.each do |x|
+      results = load_list(options)
+      results.each do |x|
         puts "#{x.name}: #{x.actual} / #{x.expected}"
       end
     end

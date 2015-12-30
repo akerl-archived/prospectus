@@ -136,6 +136,17 @@ expected do
 end
 ```
 
+### homebrew_cask
+
+Checks a Cask file for the current version. This uses the grep module, and expects the cask to be in ./Casks/$NAME.rb.
+
+```
+actual do
+  homebrew_cask
+  name 'alfred'
+end
+```
+
 ### grep
 
 This checks a local file's contents. Supports the Regex helper, and uses the provided regex pattern to match which line of the file to use. If no regex is specified, it will use the full first line of the file.
