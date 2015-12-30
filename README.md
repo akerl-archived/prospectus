@@ -136,6 +136,17 @@ expected do
 end
 ```
 
+### homebrew_formula
+
+Checks a Formula file for the current version. This uses the grep module, and expects the formula to be in ./Formula/$NAME.rb.
+
+```
+actual do
+  homebrew_formula
+  name 'openssh'
+end
+```
+
 ### homebrew_cask
 
 Checks a Cask file for the current version. This uses the grep module, and expects the cask to be in ./Casks/$NAME.rb.

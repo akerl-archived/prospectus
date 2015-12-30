@@ -1,11 +1,11 @@
 module LogCabin
   module Modules
     ##
-    # Pull state from a homebrew cask file
-    module HomebrewCask
+    # Pull state from a homebrew formula file
+    module HomebrewFormula
       def load!
         fail('No name specified') unless @name
-        cask_file = "Casks/#{@name}.rb"
+        cask_file = "Formula/#{@name}.rb"
         version_regex = /^\s+version ['"](.+)['"]$/
         Prospectus::State.from_block(@option, @state) do
           grep

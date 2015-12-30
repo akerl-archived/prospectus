@@ -9,8 +9,7 @@ def load_list(params)
   files = Dir.glob('.prospectus.d/*')
   fail('No files in .prospectus.d') if files.empty?
   results = files.map do |x|
-    params = { file: x }.merge(params)
-    Prospectus.load_from_file(params).check
+    Prospectus.load_from_file({ file: x }.merge(params)).check
   end
   results.flatten
 end
