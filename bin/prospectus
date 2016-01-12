@@ -23,14 +23,17 @@ Mercenary.program(:prospectus) do |p|
   p.option :directory, '-d DIR', '--directory DIR', 'Change to directory before loading'
   p.option :good_only, '-g', '--good', 'Show only items with good state'
   p.option :all, '-a', '--all', 'Show all items'
+  p.option :json, '-j', '--json', 'Output results as json'
   # rubocop:enable Metrics/LineLength
 
   p.action do |_, options|
     options[:directory] ||= '.'
     Dir.chdir(options[:directory]) do
       results = load_list(options)
-      results.each do |x|
-        puts "#{x.name}: #{x.actual} / #{x.expected}"
+      if options[:json]
+        puts results.to_json
+      else
+        results.each { |x| puts "#{x.name}: #{x.actual} / #{x.expected}" }
       end
     end
   end

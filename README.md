@@ -39,6 +39,10 @@ The expected/actual blocks first define the module to be used, and then define a
 
 To run the check, just run `prospectus` in the directory with the .prospectus file, or use `prospectus -d /path/to/directory`.
 
+### Parsing output
+
+If you're looking to parse the output with something else, consider using -j to get JSON output.
+
 ## Included Modules
 
 The following modules are included with Prospectus.

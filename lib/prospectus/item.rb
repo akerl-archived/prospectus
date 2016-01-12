@@ -1,3 +1,5 @@
+require 'json'
+
 module Prospectus
   ##
   # Define item objects that defined expected vs actual state
@@ -22,6 +24,10 @@ module Prospectus
 
     def actual
       @actual || fail("No actual state was loaded for #{name}")
+    end
+
+    def to_json(_ = {})
+      { name: name, expected: expected, actual: actual }.to_json
     end
   end
 
