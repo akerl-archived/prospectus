@@ -3,15 +3,19 @@
 require 'prospectus'
 require 'mercenary'
 
+def run_file(params, file)
+  Prospectus.load_from_file({ file: file }.merge(params)).check
+rescue RuntimeError
+  puts "Failed parsing #{Dir.pwd}/#{file}"
+  raise
+end
+
 def load_list(params)
-  return Prospectus.load_from_file(params).check if File.exist? '.prospectus'
+  return run_file(params, '.prospectus') if File.exist? '.prospectus'
   fail('No .prospectus/.prospectus.d found') unless Dir.exist? '.prospectus.d'
   files = Dir.glob('.prospectus.d/*')
   fail('No files in .prospectus.d') if files.empty?
-  results = files.map do |x|
-    Prospectus.load_from_file({ file: x }.merge(params)).check
-  end
-  results.flatten
+  files.map { |x| run_file(params, x) }.flatten
 end
 
 Mercenary.program(:prospectus) do |p|
