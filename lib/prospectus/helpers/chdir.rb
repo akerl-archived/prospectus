@@ -3,9 +3,9 @@ module LogCabin
     ##
     # Change directory before running module
     module Chdir
-      def chdir_helper(&block)
+      def chdir_helper
         @dir ||= '.'
-        Dir.chdir(@dir) { block.call }
+        Dir.chdir(@dir) { yield }
       end
 
       private

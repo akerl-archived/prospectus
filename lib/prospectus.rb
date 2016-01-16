@@ -1,9 +1,10 @@
+# frozen_string_literal: true
 require 'logcabin'
 
 ##
 # Tool and DSL for checking expected vs actual state
 module Prospectus
-  DEFAULT_FILE = './.prospectus'
+  DEFAULT_FILE = './.prospectus'.freeze
 
   class << self
     ##
