@@ -3,7 +3,7 @@
 require 'prospectus'
 require 'mercenary'
 
-def run_file(params, file)
+def run_file(params, file = nil)
   Prospectus.load_from_file({ file: file }.merge(params)).check
 rescue RuntimeError
   puts "Failed parsing #{Dir.pwd}/#{file}"
@@ -11,7 +11,7 @@ rescue RuntimeError
 end
 
 def load_list(params)
-  return run_file(params, '.prospectus') if File.exist? '.prospectus'
+  return run_file(params) if File.exist? '.prospectus'
   fail('No .prospectus/.prospectus.d found') unless Dir.exist? '.prospectus.d'
   files = Dir.glob('.prospectus.d/*')
   fail('No files in .prospectus.d') if files.empty?
