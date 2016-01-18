@@ -26,12 +26,19 @@ module LogCabin
       end
 
       def api_data
-        @resp ||= Net::HTTP.start(uri.host, uri.port, use_ssl: true) do |http|
+        return @api_data if @api_data
+        resp = Net::HTTP.start(uri.host, uri.port, use_ssl: true) do |http|
           request = Net::HTTP::Get.new uri.request_uri
           request.basic_auth(*creds)
           response = http.request(request)
           JSON.parse(response.body)
         end
+        @api_data = validate_response(resp)
+      end
+
+      def validate_response(resp)
+        return resp if resp.is_a? Array
+        fail("API lookup on gemnasium failed: #{resp['message']}")
       end
 
       def creds
