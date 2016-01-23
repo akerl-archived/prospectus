@@ -42,6 +42,7 @@ Mercenary.program(:prospectus) do |p|
           results.each { |x| puts "#{x.name}: #{x.actual} / #{x.expected}" }
         end
       end
+      exit 1 unless results.empty? || options[:all] || options[:good_only]
     end
   end
 end
