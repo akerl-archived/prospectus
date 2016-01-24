@@ -162,6 +162,17 @@ actual do
 end
 ```
 
+### gitlab_tag
+
+Checks a repo on GitLab.com for its latest tag. Supports the regex helper.
+
+```
+actual do
+  gitlab_tag
+  repo 'procps-ng/procps'
+end
+```
+
 ### grep
 
 This checks a local file's contents. Supports the Regex helper, and uses the provided regex pattern to match which line of the file to use. If no regex is specified, it will use the full first line of the file.
@@ -266,6 +277,10 @@ end
 ### github_api
 
 Used by modules to provide authenticated access to the GitHub API. Uses the [octoauth gem](https://github.com/akerl/octoauth)
+
+### gitlab_api
+
+Used by modules to provide access to GitLab's API, using [the gitlab gem](https://github.com/NARKOZ/gitlab)
 
 ## Installation
 
