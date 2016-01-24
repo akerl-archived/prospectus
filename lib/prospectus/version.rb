@@ -2,5 +2,5 @@
 ##
 # Declare package version
 module Prospectus
-  VERSION = '0.0.10'.freeze
+  VERSION = '0.0.11'.freeze
 end
