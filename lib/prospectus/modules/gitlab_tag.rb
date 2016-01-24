@@ -1,6 +1,8 @@
 require 'json'
 require 'open-uri'
 
+Prospectus.extra_dep('gitlab_tag', 'version_sorter')
+
 module LogCabin
   module Modules
     ##
@@ -17,7 +19,11 @@ module LogCabin
       private
 
       def tag
-        @tag ||= gitlab_api.tags(gitlab_slug(@repo), per_page: 1).first.name
+        VersionSorter.rsort(tags).first
+      end
+
+      def tags
+        @tags ||= gitlab_api.tags(gitlab_slug(@repo), per_page: 1).map(&:name)
       end
 
       def repo(value)
