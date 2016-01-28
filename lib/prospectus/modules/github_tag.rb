@@ -19,10 +19,6 @@ module LogCabin
       def tag
         @tag ||= github_api.tags(@repo).first.name
       end
-
-      def repo(value)
-        @repo = value
-      end
     end
   end
 end

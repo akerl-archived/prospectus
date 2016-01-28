@@ -8,7 +8,7 @@ module LogCabin
     module GitlabApi
       def gitlab_api
         @gitlab_api ||= Gitlab.client(
-          endpoint: gitlab_endpoint,
+          endpoint: gitlab_endpoint + '/api/v3',
           private_token: gitlab_token
         )
       end
@@ -23,11 +23,19 @@ module LogCabin
         @gitlab_token ||= Keylime.new(
           server: gitlab_endpoint,
           account: 'prospectus'
-        ).get!('GitLab API token (https://gitlab.com/profile/account)').password
+        ).get!("GitLab API token (#{gitlab_endpoint}/profile/account)").password
       end
 
       def gitlab_endpoint
-        @gitlab_endpoint ||= 'https://gitlab.com/api/v3'
+        @gitlab_endpoint ||= 'https://gitlab.com'
+      end
+
+      def repo(value)
+        @repo = value
+      end
+
+      def endpoint(value)
+        @gitlab_endpoint = value
       end
     end
   end

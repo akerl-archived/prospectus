@@ -21,6 +21,10 @@ module LogCabin
           autosave: true
         )
       end
+
+      def repo(value)
+        @repo = value
+      end
     end
   end
 end

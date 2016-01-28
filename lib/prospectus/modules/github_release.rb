@@ -19,10 +19,6 @@ module LogCabin
       def release
         @release ||= github_api.latest_release(@repo).tag_name
       end
-
-      def repo(value)
-        @repo = value
-      end
     end
   end
 end

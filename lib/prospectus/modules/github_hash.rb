@@ -17,10 +17,6 @@ module LogCabin
         @hash ||= github_api.branch(@repo, @branch).commit.sha
       end
 
-      def repo(value)
-        @repo = value
-      end
-
       def branch(value)
         @branch = value
       end
