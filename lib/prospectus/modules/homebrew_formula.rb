@@ -4,7 +4,7 @@ module LogCabin
     # Pull state from a homebrew formula file
     module HomebrewFormula
       def load!
-        fail('No name specified') unless @name
+        raise('No name specified') unless @name
         cask_file = "Formula/#{@name}.rb"
         version_regex = /^\s+version ['"](.+)['"]$/
         Prospectus::State.from_block(@option, @state) do

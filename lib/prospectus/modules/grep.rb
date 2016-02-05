@@ -6,7 +6,7 @@ module LogCabin
       include Prospectus.helpers.find(:regex)
 
       def load!
-        fail('No file specified') unless @file
+        raise('No file specified') unless @file
         @find ||= '.*'
         line = read_file
         @state.value = regex_helper(line)
@@ -19,7 +19,7 @@ module LogCabin
           line = line.chomp
           return line if line.match(@find)
         end
-        fail("No lines in #{@file} matched #{@find}")
+        raise("No lines in #{@file} matched #{@find}")
       end
 
       def file(value)

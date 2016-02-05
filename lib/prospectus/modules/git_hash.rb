@@ -9,7 +9,7 @@ module LogCabin
         chdir_helper do
           short_arg = @long ? '' : '--short'
           hash = `git rev-parse #{short_arg} HEAD 2>/dev/null`.chomp
-          fail('No hash found') if hash.empty?
+          raise('No hash found') if hash.empty?
           @state.value = hash
         end
       end

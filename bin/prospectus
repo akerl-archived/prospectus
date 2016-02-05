@@ -12,9 +12,9 @@ end
 
 def load_list(params)
   return run_file(params) if File.exist? '.prospectus'
-  fail('No .prospectus/.prospectus.d found') unless Dir.exist? '.prospectus.d'
+  raise('No .prospectus/.prospectus.d found') unless Dir.exist? '.prospectus.d'
   files = Dir.glob('.prospectus.d/*')
-  fail('No files in .prospectus.d') if files.empty?
+  raise('No files in .prospectus.d') if files.empty?
   files.map { |x| run_file(params, x) }.flatten
 end
 

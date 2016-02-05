@@ -7,7 +7,7 @@ module LogCabin
 
       def load!
         tag = `git describe --tags --abbrev=0 2>/dev/null`.chomp
-        fail('No tags found') if tag.empty?
+        raise('No tags found') if tag.empty?
         @state.value = regex_helper(tag)
       end
     end

@@ -19,11 +19,11 @@ module Prospectus
     end
 
     def expected
-      @expected || fail("No expected state was loaded for #{name}")
+      @expected || raise("No expected state was loaded for #{name}")
     end
 
     def actual
-      @actual || fail("No actual state was loaded for #{name}")
+      @actual || raise("No actual state was loaded for #{name}")
     end
 
     def to_json(_ = {})

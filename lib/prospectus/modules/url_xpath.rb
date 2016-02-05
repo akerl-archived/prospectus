@@ -10,8 +10,8 @@ module LogCabin
       include Prospectus.helpers.find(:regex)
 
       def load!
-        fail('No url provided') unless @url
-        fail('No xpath provided') unless @xpath
+        raise('No url provided') unless @url
+        raise('No xpath provided') unless @xpath
         text = parse_page
         @state.value = regex_helper(text)
       end

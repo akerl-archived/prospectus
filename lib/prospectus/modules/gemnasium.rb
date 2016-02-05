@@ -8,7 +8,7 @@ module LogCabin
     # Pull state from Gemnasium
     module Gemnasium
       def load!
-        fail('No slug provided') unless @slug
+        raise('No slug provided') unless @slug
         @state.value = parse_api
       end
 
@@ -38,7 +38,7 @@ module LogCabin
 
       def validate_response(resp)
         return resp if resp.is_a? Array
-        fail("API lookup on gemnasium failed: #{resp['message']}")
+        raise("API lookup on gemnasium failed: #{resp['message']}")
       end
 
       def creds

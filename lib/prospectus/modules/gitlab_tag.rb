@@ -10,7 +10,7 @@ module LogCabin
       include Prospectus.helpers.find(:gitlab_api)
 
       def load!
-        fail('No repo specified') unless @repo
+        raise('No repo specified') unless @repo
         @state.value = regex_helper(tag)
       end
 
