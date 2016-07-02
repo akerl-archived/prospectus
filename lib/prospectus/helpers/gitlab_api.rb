@@ -20,10 +20,16 @@ module LogCabin
       private
 
       def gitlab_token
+        @gitlab_token ||= token_from_file
         @gitlab_token ||= Keylime.new(
           server: gitlab_endpoint,
           account: 'prospectus'
         ).get!("GitLab API token (#{gitlab_endpoint}/profile/account)").password
+      end
+
+      def token_from_file
+        return unless File.exist? File.expand_path('~/.gitlab_api')
+        File.read('~/.gitlab_api').strip
       end
 
       def gitlab_endpoint
