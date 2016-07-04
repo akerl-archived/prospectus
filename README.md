@@ -112,7 +112,7 @@ end
 
 ### github_tag
 
-This checks the latest GitHub tag for a repo. Supports the Regex helper and uses the GitHub API helper for API access.
+This checks the latest GitHub tag for a repo. Supports the Regex and Filter helpers and uses the GitHub API helper for API access.
 
 ```
 expected do
@@ -260,6 +260,21 @@ end
 actual do
   git_tag
   regex /^v(\d+)_(\d+)_(\d+)$/, '\1.\2.\3'
+end
+```
+
+### filter
+
+Allows filtering of available items. Useful for modules that must parse a list where you only care about some of the entries (like upstream repos that tag multiple packages in the same repo).
+
+The provided argument is the regex pattern to filter the list with.
+
+```
+# This filters out github tags that don't match the format 1.2.3
+expected do
+  github_tag
+  repo 'foo/bar'
+  filter /^[\d.]+$/
 end
 ```
 

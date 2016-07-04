@@ -8,6 +8,7 @@ module LogCabin
     module GithubTag
       include Prospectus.helpers.find(:regex)
       include Prospectus.helpers.find(:github_api)
+      include Prospectus.helpers.find(:filter)
 
       def load!
         raise('No repo specified') unless @repo
@@ -17,7 +18,8 @@ module LogCabin
       private
 
       def tag
-        @tag ||= github_api.tags(@repo).first.name
+        return @tag if @tag
+        @tags = filter_helper(github_api.tags(@repo).map { |x| x[:name] }).first
       end
     end
   end
