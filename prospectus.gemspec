@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'mercenary', '~> 0.3.4'
   s.add_dependency 'logcabin', '~> 0.0.1'
 
-  s.add_development_dependency 'rubocop', '~> 0.41.1'
+  s.add_development_dependency 'rubocop', '~> 0.42.0'
   s.add_development_dependency 'rake', '~> 11.2.0'
   s.add_development_dependency 'codecov', '~> 0.1.1'
   s.add_development_dependency 'rspec', '~> 3.5.0'
