@@ -25,6 +25,14 @@ module Prospectus
       @options = params
     end
 
+    def respond_to_missing?(method, _ = false)
+      return super if @module
+      Prospectus.modules.find(method)
+      true
+    rescue RuntimeError
+      super
+    end
+
     def method_missing(method, *args, &block)
       return super if @module
       @module = Prospectus.modules.find(method)
