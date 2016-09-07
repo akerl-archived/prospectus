@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.executables = ['prospectus']
 
   s.add_dependency 'mercenary', '~> 0.3.4'
-  s.add_dependency 'logcabin', '~> 0.1.0'
+  s.add_dependency 'logcabin', '~> 0.1.3'
 
   s.add_development_dependency 'rubocop', '~> 0.42.0'
   s.add_development_dependency 'rake', '~> 11.2.0'
