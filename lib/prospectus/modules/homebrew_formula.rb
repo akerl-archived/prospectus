@@ -1,3 +1,5 @@
+require 'json'
+
 module LogCabin
   module Modules
     ##
@@ -6,12 +8,8 @@ module LogCabin
       def load!
         raise('No name specified') unless @name
         cask_file = "Formula/#{@name}.rb"
-        version_regex = /^\s+version ['"](.+)['"]$/
-        Prospectus::State.from_block(@option, @state) do
-          grep
-          file cask_file
-          regex version_regex
-        end
+        output = `brew info --json=v1 #{cask_file}`
+        @state.value = JSON.parse(output).first.dig('versions', 'stable')
       end
 
       private
