@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'logcabin', '~> 0.1.3'
 
   s.add_development_dependency 'rubocop', '~> 0.46.0'
-  s.add_development_dependency 'rake', '~> 11.3.0'
+  s.add_development_dependency 'rake', '~> 12.0.0'
   s.add_development_dependency 'codecov', '~> 0.1.1'
   s.add_development_dependency 'rspec', '~> 3.5.0'
   s.add_development_dependency 'fuubar', '~> 2.2.0'
