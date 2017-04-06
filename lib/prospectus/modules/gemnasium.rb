@@ -15,7 +15,7 @@ module LogCabin
       private
 
       def parse_api
-        %w(red yellow).each do |color|
+        %w[red yellow].each do |color|
           return color if colors.include? color
         end
         'green'
