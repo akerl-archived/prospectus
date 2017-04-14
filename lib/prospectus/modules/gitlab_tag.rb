@@ -17,7 +17,7 @@ module LogCabin
       private
 
       def tag
-        @tag ||= gitlab_api.tags(gitlab_slug(@repo)).sort do |*points|
+        @tag ||= gitlab_api.tags(@repo).sort do |*points|
           dates = points.map { |x| Date.parse(x.commit.committed_date) }
           dates.last <=> dates.first
         end.first.name

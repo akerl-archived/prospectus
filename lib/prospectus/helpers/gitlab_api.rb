@@ -13,10 +13,6 @@ module LogCabin
         )
       end
 
-      def gitlab_slug(repo)
-        repo.sub('/', '%2F')
-      end
-
       private
 
       def gitlab_token
