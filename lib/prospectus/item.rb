@@ -18,6 +18,11 @@ module Prospectus
       @name
     end
 
+    def noop
+      @expected = 'noop'
+      @actual = 'noop'
+    end
+
     def expected
       @expected || raise("No expected state was loaded for #{name}")
     end
@@ -41,6 +46,10 @@ module Prospectus
 
     def name(value)
       @item.instance_variable_set(:@name, value)
+    end
+
+    def noop
+      @item.noop
     end
 
     def expected(&block)
