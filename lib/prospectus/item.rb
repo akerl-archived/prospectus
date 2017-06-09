@@ -18,6 +18,11 @@ module Prospectus
       @name
     end
 
+    def prefix(value)
+      raise('Name not set for sub-item') unless @name
+      @name = value + '::' + @name
+    end
+
     def noop
       @expected = 'noop'
       @actual = 'noop'
@@ -63,9 +68,6 @@ module Prospectus
     def deps(&block)
       dsl = ListDSL.new(@item.list, @options)
       dsl.instance_eval(&block)
-      @item.list.items.each do |dep|
-        dep.instance_variable_set(:@name, "#{@item.name}::#{dep.name}")
-      end
     end
 
     private
