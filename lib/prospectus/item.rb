@@ -14,7 +14,7 @@ module Prospectus
     def name
       return @name if @name
       @name = File.basename Dir.pwd
-      @name << "::#{File.basename @options[:file]}" if @options[:file]
+      @name << "::#{File.basename @options[:file]}" if @options[:suffix_file]
       @name
     end
 

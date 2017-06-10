@@ -5,8 +5,6 @@ require 'logcabin'
 ##
 # Tool and DSL for checking expected vs actual state
 module Prospectus
-  DEFAULT_FILE = './.prospectus'.freeze
-
   class << self
     ##
     # Insert a helper .new() method for creating a new Cache object
@@ -14,13 +12,17 @@ module Prospectus
       self::List.new(*args)
     end
 
+    def load(*args)
+      self::Loader.new(*args).load
+    end
+
     ##
     # Method for loading list from DSL
     def load_from_file(params = {})
-      file = params[:file] || DEFAULT_FILE
+      file = params[:file] || raise('File path required for load_from_file')
       list = List.new(params)
       dsl = ListDSL.new(list, params)
-      dsl.instance_eval(File.read(file), file)
+      dsl.instance_eval(File.read(file), File.realpath(file, Dir.pwd))
       list
     end
 
@@ -51,6 +53,7 @@ module Prospectus
 end
 
 require 'prospectus/version'
+require 'prospectus/loader'
 require 'prospectus/list'
 require 'prospectus/item'
 require 'prospectus/state'

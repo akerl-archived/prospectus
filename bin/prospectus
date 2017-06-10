@@ -3,21 +3,6 @@
 require 'prospectus'
 require 'mercenary'
 
-def run_file(params, file = nil)
-  Prospectus.load_from_file({ file: file }.merge(params)).check
-rescue RuntimeError
-  puts "Failed parsing #{Dir.pwd}/#{file}"
-  raise
-end
-
-def load_list(params)
-  return run_file(params) if File.exist? '.prospectus'
-  raise('No .prospectus/.prospectus.d found') unless Dir.exist? '.prospectus.d'
-  files = Dir.glob('.prospectus.d/*')
-  raise('No files in .prospectus.d') if files.empty?
-  files.map { |x| run_file(params, x) }.flatten
-end
-
 Mercenary.program(:prospectus) do |p|
   p.version Prospectus::VERSION
   p.description 'Tool and DSL for checking expected vs actual state'
@@ -34,7 +19,7 @@ Mercenary.program(:prospectus) do |p|
   p.action do |_, options|
     options[:directory] ||= '.'
     Dir.chdir(options[:directory]) do
-      results = load_list(options)
+      results = Prospectus.load(options)
       unless options[:quiet]
         if options[:json]
           puts results.to_json
