@@ -9,11 +9,12 @@ module Prospectus
     def initialize(params = {})
       @options = params
       @list = List.new(params)
+      @dir = Dir.pwd
     end
 
     def name
       return @name if @name
-      @name = File.basename Dir.pwd
+      @name = File.basename @dir
       @name << "::#{File.basename @options[:file]}" if @options[:suffix_file]
       @name
     end
