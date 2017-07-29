@@ -8,6 +8,7 @@ module LogCabin
     module GithubRelease
       include Prospectus.helpers.find(:regex)
       include Prospectus.helpers.find(:github_api)
+      include Prospectus.helpers.find(:filter)
 
       def load!
         raise('No repo specified') unless @repo
@@ -17,7 +18,9 @@ module LogCabin
       private
 
       def release
-        @release ||= github_api.latest_release(@repo).tag_name
+        return @release if @release
+        releases = github_api.releases(@repo).map(&:tag_name)
+        @release = filter_helper(releases).first
       end
     end
   end

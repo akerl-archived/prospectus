@@ -101,7 +101,7 @@ end
 
 ### github_release
 
-This checks the latest GitHub release for a repo (must be a real Release, not just a tag. Use github_tag if there isn't a Release). Supports the Regex helper and uses the GitHub API helper for API access.
+This checks the latest GitHub release for a repo (must be a real Release, not just a tag. Use github_tag if there isn't a Release). Supports the Regex and Filter helpers and uses the GitHub API helper for API access.
 
 ```
 expected do
