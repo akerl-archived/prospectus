@@ -19,8 +19,9 @@ module LogCabin
 
       def release
         return @release if @release
-        releases = github_api.releases(@repo).map(&:tag_name)
-        @release = filter_helper(releases).first
+        releases = github_api.releases(@repo)
+        %i[draft prerelease].each { |x| releases.reject!(&x) }
+        @release = filter_helper(releases.map(&:tag_name).first
       end
     end
   end
