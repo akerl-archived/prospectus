@@ -25,8 +25,10 @@ module Prospectus
     end
 
     def noop
-      @expected = 'noop'
-      @actual = 'noop'
+      x = State.new
+      x.value = 'noop'
+      @expected = x
+      @actual = x
     end
 
     def expected
@@ -38,7 +40,7 @@ module Prospectus
     end
 
     def to_json(_ = {})
-      { name: name, expected: expected, actual: actual }.to_json
+      { name: name, expected: expected.value, actual: actual.value }.to_json
     end
   end
 
@@ -75,7 +77,7 @@ module Prospectus
 
     def state(name, &block)
       state = Prospectus::State.from_block(@options, &block)
-      @item.instance_variable_set(name, state.value)
+      @item.instance_variable_set(name, state)
     rescue => e
       raise("Failed to set #{name} state for #{@item.name}: #{e.message}")
     end

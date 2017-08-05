@@ -15,6 +15,18 @@ module Prospectus
       dsl.load!
       state
     end
+
+    def =~(other)
+      return super unless other.is_a? Prospectus::State
+      ov = other.value
+      return ov.include?(@value) if ov.respond_to? :include?
+      return @value =~ ov if ov.is_a? Regexp
+      @value == ov
+    end
+
+    def to_s
+      @value.to_s
+    end
   end
 
   ##
