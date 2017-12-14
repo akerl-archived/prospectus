@@ -78,7 +78,7 @@ module Prospectus
     def state(name, &block)
       state = Prospectus::State.from_block(@options, &block)
       @item.instance_variable_set(name, state)
-    rescue => e # rubocop:disable Lint/RescueWithoutErrorClass
+    rescue => e # rubocop:disable Style/RescueStandardError
       raise("Failed to set #{name} state for #{@item.name}: #{e.message}")
     end
   end
