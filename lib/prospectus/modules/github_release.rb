@@ -17,10 +17,15 @@ module LogCabin
 
       private
 
+      def allow_prerelease
+        @allow_prerelease = true
+      end
+
       def release
         return @release if @release
         releases = github_api.releases(@repo)
-        %i[draft prerelease].each { |x| releases.reject!(&x) }
+        releases.reject!(&:draft)
+        releases.reject!(&:prerelease) unless @allow_prerelease
         @release = filter_helper(releases.map(&:tag_name)).first
       end
     end
