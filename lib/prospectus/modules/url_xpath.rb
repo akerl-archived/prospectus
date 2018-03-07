@@ -19,8 +19,9 @@ module LogCabin
       private
 
       def parse_page
-        page = Nokogiri::HTML(open(@url)) { |config| config.strict.nonet }
-        page.xpath(@xpath).text.strip
+        page = open(@url) # rubocop:disable Security/Open
+        html = Nokogiri::HTML(page) { |config| config.strict.nonet }
+        html.xpath(@xpath).text.strip
       end
 
       def url(value)
