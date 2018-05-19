@@ -202,29 +202,9 @@ expected do
 end
 ```
 
-### gemnasium
-
-Parses the dep status on Gemnasium for a project. Will return the worst color from their dashboard (red, yellow, or green). Requires the netrc gem.
-
-Due to the nature of the response, this is best used with a `static` expected block, like this:
-
-```
-item do
-  expected do
-    static
-    set 'green'
-  end
-
-  actual do
-    gemnasium
-    slug 'amylum/server'
-  end
-end
-```
-
 ### static
 
-Basic module for staticly defining a value. Useful for testing, and also for comparisons against a known state (like with the gemnasium module).
+Basic module for staticly defining a value. Useful for testing, and also for comparisons against a known state.
 
 ```
 item do
