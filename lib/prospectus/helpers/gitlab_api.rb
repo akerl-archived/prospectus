@@ -8,7 +8,7 @@ module LogCabin
     module GitlabApi
       def gitlab_api
         @gitlab_api ||= Gitlab.client(
-          endpoint: gitlab_endpoint + '/api/v3',
+          endpoint: gitlab_endpoint + '/api/v4',
           private_token: gitlab_token
         )
       end
