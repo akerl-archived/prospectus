@@ -5,8 +5,9 @@ module LogCabin
     module Regex
       def regex_helper(value)
         return value unless @find
-        raise("Value does not match regex: #{value}") unless value.match(@find)
-        value.sub(@find, @replace)
+        m = value.match(@find)
+        raise("Value does not match regex: #{value}") unless m
+        m.to_s.sub(@find, @replace)
       end
 
       private
