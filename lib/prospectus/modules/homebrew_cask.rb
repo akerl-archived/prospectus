@@ -6,12 +6,8 @@ module LogCabin
       def load!
         raise('No name specified') unless @name
         cask_file = "Casks/#{@name}.rb"
-        version_regex = /^\s+version ['"](.+)['"]$/
-        Prospectus::State.from_block(@option, @state) do
-          grep
-          file cask_file
-          regex version_regex
-        end
+        output = `brew cask _stanza version #{cask_file}`
+        @state.value = output.strip
       end
 
       private
