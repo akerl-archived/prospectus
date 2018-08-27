@@ -2,7 +2,6 @@ prospectus
 =========
 
 [![Gem Version](https://img.shields.io/gem/v/prospectus.svg)](https://rubygems.org/gems/prospectus)
-[![Dependency Status](https://img.shields.io/gemnasium/akerl/prospectus.svg)](https://gemnasium.com/akerl/prospectus)
 [![Build Status](https://img.shields.io/circleci/project/akerl/prospectus/master.svg)](https://circleci.com/gh/akerl/prospectus)
 [![Coverage Status](https://img.shields.io/codecov/c/github/akerl/prospectus.svg)](https://codecov.io/github/akerl/prospectus)
 [![Code Quality](https://img.shields.io/codacy/36b84b3bc7b24cd4991c4753f7788850.svg)](https://www.codacy.com/app/akerl/prospectus)
