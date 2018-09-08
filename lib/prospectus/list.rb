@@ -6,6 +6,16 @@ module Prospectus
       @options = params
     end
 
+    ##
+    # Method for loading list from DSL
+    def self.from_file(params = {})
+      file = params[:file] || raise('File path required for List.from_file')
+      list = List.new(params)
+      dsl = ListDSL.new(list, params)
+      dsl.instance_eval(File.read(file), File.realpath(file, Dir.pwd))
+      list
+    end
+
     def items
       @items ||= []
     end

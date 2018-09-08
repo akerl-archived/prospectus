@@ -5,10 +5,10 @@ module LogCabin
     module GithubHash
       include Prospectus.helpers.find(:github_api)
 
-      def load!
+      def load
         raise('No repo specified') unless @repo
         @branch ||= 'master'
-        @state.value = @long ? hash : hash.slice(0, 7)
+        @long ? hash : hash.slice(0, 7)
       end
 
       private

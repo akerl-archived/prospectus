@@ -5,11 +5,11 @@ module LogCabin
     module Grep
       include Prospectus.helpers.find(:regex)
 
-      def load!
+      def load
         raise('No file specified') unless @file
         @find ||= '.*'
         line = read_file
-        @state.value = regex_helper(line)
+        regex_helper(line)
       end
 
       private

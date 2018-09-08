@@ -25,8 +25,10 @@ module Prospectus
     end
 
     def noop
-      x = State.new
-      x.value = 'noop'
+      x = State.from_block do
+        static
+        set 'noop'
+      end
       @expected = x
       @actual = x
     end

@@ -5,10 +5,10 @@ module LogCabin
     module GitTag
       include Prospectus.helpers.find(:regex)
 
-      def load!
+      def load
         tag = `git describe --tags --abbrev=0 2>/dev/null`.chomp
         raise('No tags found') if tag.empty?
-        @state.value = regex_helper(tag)
+        regex_helper(tag)
       end
     end
   end

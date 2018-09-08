@@ -10,9 +10,9 @@ module LogCabin
       include Prospectus.helpers.find(:github_api)
       include Prospectus.helpers.find(:filter)
 
-      def load!
+      def load
         raise('No repo specified') unless @repo
-        @state.value = regex_helper(release)
+        regex_helper(release)
       end
 
       private

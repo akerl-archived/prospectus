@@ -16,16 +16,6 @@ module Prospectus
       self::Loader.new(*args).load
     end
 
-    ##
-    # Method for loading list from DSL
-    def load_from_file(params = {})
-      file = params[:file] || raise('File path required for load_from_file')
-      list = List.new(params)
-      dsl = ListDSL.new(list, params)
-      dsl.instance_eval(File.read(file), File.realpath(file, Dir.pwd))
-      list
-    end
-
     def modules
       @modules ||= LogCabin.new(load_path: load_path(:modules))
     end
