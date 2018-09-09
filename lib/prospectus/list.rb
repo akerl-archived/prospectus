@@ -4,6 +4,7 @@ module Prospectus
   class List
     def initialize(params = {})
       @options = params
+      @items = @options[:items]
     end
 
     ##
@@ -17,7 +18,7 @@ module Prospectus
     end
 
     def items
-      @items ||= @options[:items] || []
+      @items ||= []
     end
 
     def check
