@@ -3,9 +3,9 @@ module LogCabin
     ##
     # Simple text class, uses "set 'value'" to declare value
     module Static
-      def load
+      def load!
         raise('Must use `set` to provide a value') unless @value
-        @value
+        @state.value = @value
       end
 
       private

@@ -5,7 +5,7 @@ module LogCabin
     module Chdir
       def chdir_helper
         @dir ||= '.'
-        Dir.chdir(@dir) { return yield }
+        Dir.chdir(@dir) { yield }
       end
 
       private

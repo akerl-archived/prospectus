@@ -2,40 +2,30 @@ module Prospectus
   ##
   # Define a state object that supports modular checks
   class State
+    attr_accessor :value
+
     def initialize(params = {})
       @options = params
     end
 
     def self.from_block(params = {}, state = nil, &block)
       state ||= State.new(params)
-      state.eval(&block)
+      dsl = StateDSL.new(state, params)
+      dsl.instance_eval(&block)
+      dsl.load!
       state
     end
 
     def =~(other)
       return super unless other.is_a? Prospectus::State
       ov = other.value
-      return ov.include?(value) if ov.is_a? Enumerable
-      return value =~ ov if ov.is_a? Regexp
-      value == ov
+      return ov.include?(@value) if ov.is_a? Enumerable
+      return @value =~ ov if ov.is_a? Regexp
+      @value == ov
     end
 
     def to_s
-      value.to_s
-    end
-
-    def value
-      @value ||= dsl.load
-    end
-
-    def eval(&block)
-      dsl.instance_eval(&block)
-    end
-
-    private
-
-    def dsl
-      @dsl ||= StateDSL.new(self, @options)
+      @value.to_s
     end
   end
 

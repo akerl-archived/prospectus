@@ -9,11 +9,11 @@ module LogCabin
     module UrlXpath
       include Prospectus.helpers.find(:regex)
 
-      def load
+      def load!
         raise('No url provided') unless @url
         raise('No xpath provided') unless @xpath
         text = parse_page
-        regex_helper(text)
+        @state.value = regex_helper(text)
       end
 
       private

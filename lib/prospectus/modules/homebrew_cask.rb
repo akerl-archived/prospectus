@@ -3,11 +3,11 @@ module LogCabin
     ##
     # Pull state from a homebrew cask file
     module HomebrewCask
-      def load
+      def load!
         raise('No name specified') unless @name
         cask_file = "Casks/#{@name}.rb"
         output = `brew cask _stanza version #{cask_file}`
-        output.strip
+        @state.value = output.strip
       end
 
       private
