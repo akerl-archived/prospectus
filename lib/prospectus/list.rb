@@ -22,7 +22,11 @@ module Prospectus
     end
 
     def check
-      items.select(&:check)
+      all, good_only = @options.values_at(:all, :good_only)
+      items.select do |x|
+        match = x.actual =~ x.expected
+        true if all || (!match ^ good_only)
+      end
     end
   end
 

@@ -33,10 +33,6 @@ module Prospectus
       @actual = x
     end
 
-    def check
-      @options[:all] || (x.actual !~ x.expected ^ @options[:good_only])
-    end
-
     def expected
       @expected || raise("No expected state was loaded for #{name}")
     end
