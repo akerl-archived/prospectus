@@ -13,11 +13,7 @@ module Prospectus
     end
 
     def load(*args)
-      self::Loader.new(*args)
-    end
-
-    def check(*args)
-      self::Loader.new(*args).check
+      self::Loader.new(*args).load
     end
 
     def modules

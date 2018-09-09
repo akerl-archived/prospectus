@@ -19,7 +19,7 @@ Mercenary.program(:prospectus) do |p|
   p.action do |_, options|
     options[:directory] ||= '.'
     Dir.chdir(options[:directory]) do
-      results = Prospectus.check(options)
+      results = Prospectus.load(options)
       unless options[:quiet]
         if options[:json]
           puts results.to_json
