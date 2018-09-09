@@ -17,7 +17,7 @@ module Prospectus
     end
 
     def items
-      @items ||= []
+      @items ||= @options[:items] || []
     end
 
     def check

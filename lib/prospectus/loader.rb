@@ -10,7 +10,17 @@ module Prospectus
       @dir = @file + '.d'
     end
 
-    def load
+    def list
+      @list ||= Prospectus::List.new(items: load_file_or_dir)
+    end
+
+    def check
+      list.check
+    end
+
+    private
+
+    def load_file_or_dir
       return parse_file(@options, @file) if File.exist? @file
       raise("No #{@file}/#{@dir} found") unless Dir.exist? @dir
       files = Dir.glob(@dir + '/*')
@@ -18,11 +28,9 @@ module Prospectus
       files.map { |x| parse_file(@options, x, true) }.flatten
     end
 
-    private
-
     def parse_file(params, file, suffix_file = false)
       options = { file: file, suffix_file: suffix_file }.merge(params)
-      Prospectus::List.from_file(options).check
+      Prospectus::List.from_file(options).items
     rescue RuntimeError
       puts "Failed parsing #{Dir.pwd}/#{file}"
       raise
