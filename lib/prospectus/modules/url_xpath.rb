@@ -19,7 +19,7 @@ module LogCabin
       private
 
       def parse_page
-        page = open(@url) # rubocop:disable Security/Open
+        page = open(@url, @headers || {}) # rubocop:disable Security/Open
         html = Nokogiri::HTML(page) { |config| config.strict.nonet }
         html.xpath(@xpath).text.strip
       end
@@ -30,6 +30,10 @@ module LogCabin
 
       def xpath(value)
         @xpath = value
+      end
+
+      def headers(value)
+        @headers = value
       end
     end
   end
