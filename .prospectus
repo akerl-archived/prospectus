@@ -1,0 +1,9 @@
+Prospectus.extra_dep('file', 'prospectus_travis')
+Prospectus.extra_dep('file', 'prospectus_golang')
+
+item do
+  noop
+
+  extend ProspectusTravis::Build.new('akerl/prospectus-ng')
+  extend ProspectusGolang::Deps.new
+end
