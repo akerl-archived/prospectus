@@ -15,11 +15,11 @@ package(
   type: 'file',
   artifacts: [
     {
-      source: "bin/#{@forge.name}_darwin",
+      source: "bin/#{@forge.name}-ng_darwin",
       name: "#{@forge.name}_darwin"
     },
     {
-      source: "bin/#{@forge.name}_linux",
+      source: "bin/#{@forge.name}-ng_linux",
       name: "#{@forge.name}_linux"
     }
   ]
