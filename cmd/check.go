@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func checkRunner(cmd *cobra.Command, args []string) error {
+func checkRunner(cmd *cobra.Command, args []string) error { //revive:disable-line:cyclomatic
 	flags := cmd.Flags()
 	flagAll, err := flags.GetBool("all")
 	if err != nil {
@@ -21,12 +21,13 @@ func checkRunner(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	if len(args) == 0 {
-		args = []string{"."}
+	params := []string{"."}
+	if len(args) != 0 {
+		params = args
 	}
 
 	checks := prospectus.Checks{}
-	err = checks.Populate(args)
+	err = checks.Populate(params)
 	if err != nil {
 		return err
 	}

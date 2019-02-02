@@ -48,7 +48,7 @@ type Check struct {
 }
 
 // Populate parses checks from a list of directories
-func (cs *Checks) Populate(dirs []string) error {
+func (cs *Checks) Populate(_ []string) error {
 	// TODO: execute each dir .prospectus/.prospectus.d to get checks
 	return nil
 }
