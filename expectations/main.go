@@ -1,5 +1,9 @@
 package expectations
 
+import (
+	"fmt"
+)
+
 // Expectation defines a pluggable interface for matching desired state to actual
 type Expectation interface {
 	Matches(string) bool
@@ -17,7 +21,7 @@ func New(p Params) Expectation {
 	item, ok := types[p.Type]
 	if !ok {
 		item = types["error"]
-		p.Data["type"] = p.Type
+		p.Data["msg"] = fmt.Sprintf("expectation type not known: %s", p.Type)
 	}
 	return item(p.Data)
 }

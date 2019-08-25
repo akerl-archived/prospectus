@@ -5,11 +5,11 @@ import (
 )
 
 type errorExpectation struct {
-	typeName string
+	msg string
 }
 
 func newErrorExpectation(data map[string]string) Expectation {
-	return errorExpectation{typeName: data["type"]}
+	return errorExpectation{msg: data["msg"]}
 }
 
 // Matches returns false in all cases
@@ -19,5 +19,5 @@ func (e errorExpectation) Matches(_ string) bool {
 
 // String returns a type error message
 func (e errorExpectation) String() string {
-	return fmt.Sprintf("error: expectation type not known: %s", e.typeName)
+	return fmt.Sprintf("error: %s", e.msg)
 }

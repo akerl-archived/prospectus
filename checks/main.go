@@ -9,9 +9,6 @@ import (
 
 // TODO: add timber logging
 // TODO: add parallelization
-// TODO: implement String Expected
-// TODO: implement Regex Expected
-// TODO: implement Set Expected
 
 // Check defines a single check that is ready for execution
 type Check struct {
