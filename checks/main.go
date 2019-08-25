@@ -2,6 +2,7 @@ package checks
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"strings"
 
 	"github.com/akerl/go-prospectus/expectations"
@@ -9,6 +10,7 @@ import (
 
 // TODO: add timber logging
 // TODO: add parallelization
+// TODO: properly marshal Expected.String() in Json()
 
 // Check defines a single check that is ready for execution
 type Check struct {
@@ -38,9 +40,23 @@ type Expected interface {
 }
 
 // NewSet returns a CheckSet based on a provided list of directories
-func NewSet(dirs []string) (CheckSet, error) {
-	// TODO: Actually load checks from directories
-	return CheckSet{}, nil
+func NewSet(relativeDirs []string) (CheckSet, error) {
+	var err error
+
+	dirs := make([]string, len(relativeDirs))
+	for index, item := range relativeDirs {
+		dirs[index], err = filepath.Abs(item)
+		if err != nil {
+			return CheckSet{}, err
+		}
+	}
+
+	var cs CheckSet
+	for index, item := range dirs {
+		// TODO: Actually load checks from directories
+	}
+
+	return cs, nil
 }
 
 // Execute returns the Results from a CheckSet by calling Execute on each Check
