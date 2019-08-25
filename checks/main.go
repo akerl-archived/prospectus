@@ -3,13 +3,22 @@ package checks
 import (
 	"encoding/json"
 	"strings"
+
+	"github.com/akerl/go-prospectus/expectations"
 )
 
 // TODO: add timber logging
 // TODO: add parallelization
+// TODO: implement String Expected
+// TODO: implement Regex Expected
+// TODO: implement Set Expected
 
 // Check defines a single check that is ready for execution
 type Check struct {
+	Dir      string
+	File     string
+	Name     string
+	Metadata map[string]string
 }
 
 // CheckSet defines a group of Checks
@@ -17,10 +26,19 @@ type CheckSet []Check
 
 // Result defines the results of executing a Check
 type Result struct {
+	Actual   string
+	Expected Expected
+	Check    Check
 }
 
 // ResultSet defines a group of Results
 type ResultSet []Result
+
+// Expected defines a pluggable interface for matching desired state to actual
+type Expected interface {
+	Matches(string) bool
+	String() string
+}
 
 // NewSet returns a CheckSet based on a provided list of directories
 func NewSet(dirs []string) (CheckSet, error) {
@@ -55,8 +73,7 @@ func (rs ResultSet) Changed() ResultSet {
 
 // Matches returns true if the Expected and Actual values of the Result match
 func (r Result) Matches() bool {
-	// TODO: Actually check if result matches
-	return true
+	return r.Expected.Matches(r.Actual)
 }
 
 // Json returns the ResultsSet as a marshalled JSON string
@@ -80,6 +97,11 @@ func (rs ResultSet) String() string {
 
 // String returns the Result as a human-readable string
 func (r Result) String() string {
-	// TODO: Actually return a representation of the Result
-	return "placeholder"
+	return fmt.Sprintf(
+		"%s::%s: %s / %s",
+		r.Check.Dir,
+		r.Check.Name,
+		r.Actual,
+		r.Expected.String(),
+	)
 }
