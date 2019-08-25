@@ -1,0 +1,30 @@
+name 'prospectus'
+org 'akerl'
+
+source(
+  type: 'git',
+  path: '.'
+)
+
+build do
+  run 'make local'
+  cp 'bin'
+end
+
+package(
+  type: 'file',
+  artifacts: [
+    {
+      source: 'bin/prospectus_darwin',
+      name: 'prospectus_darwin'
+    },
+    {
+      source: 'bin/prospectus_linux',
+      name: 'prospectus_linux'
+    }
+  ]
+)
+
+test do
+  # TODO: add tests
+end

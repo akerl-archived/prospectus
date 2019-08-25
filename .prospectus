@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+
+require 'prospectus'
+
+Prospectus.extra_dep('file', 'prospectus_travis')
+Prospectus.extra_dep('file', 'prospectus_golang')
+
+item do
+  noop
+
+  extend ProspectusGolang::Deps.new
+  extend ProspectusTravis::Build.new('akerl/go-prospectus')
+end
