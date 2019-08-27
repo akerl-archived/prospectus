@@ -6,31 +6,49 @@ import (
 
 // Expectation defines a pluggable interface for matching desired state to actual
 type Expectation interface {
+	Load(map[string]string) Expectation
 	Matches(string) bool
 	String() string
 }
 
-// Params defines the parameters that construct an Expectation
-type Params struct {
-	Type string
-	Data map[string]string
+// Wrapper defines the parameters that construct an Expectation
+type Wrapper struct {
+	Type        string            `json:"type"`
+	Data        map[string]string `json:"data"`
+	expectation Expectation
 }
 
-// New creates a new Expectation from the given Params
-func New(p Params) Expectation {
-	item, ok := types[p.Type]
-	if !ok {
-		item = types["error"]
-		p.Data["msg"] = fmt.Sprintf("expectation type not known: %s", p.Type)
+// Matches proxies the request to the underlying expectation
+func (w Wrapper) Matches(actual string) bool {
+	if w.expectation == nil {
+		w.load()
 	}
-	return item(p.Data)
+	return w.expectation.Matches(actual)
 }
 
-type builder func(map[string]string) Expectation
+// String proxies the request to the underlying expectation
+func (w Wrapper) String() string {
+	if w.expectation == nil {
+		w.load()
+	}
+	return w.expectation.String()
+}
+
+func (w Wrapper) load() {
+	itemFunc, ok := types[w.Type]
+	if !ok {
+		itemFunc = types["error"]
+		w.Data["msg"] = fmt.Sprintf("expectation type not known: %s", w.Type)
+	}
+	e := itemFunc()
+	w.expectation = e.Load(w.Data)
+}
+
+type builder func() Expectation
 
 var types = map[string]builder{
-	"error":  newErrorExpectation,
-	"string": newStringExpectation,
-	"regex":  newRegexExpectation,
-	"set":    newSetExpectation,
+	"error":  func() Expectation { return &errorExpectation{} },
+	"string": func() Expectation { return &stringExpectation{} },
+	"regex":  func() Expectation { return &regexExpectation{} },
+	"set":    func() Expectation { return &setExpectation{} },
 }

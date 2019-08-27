@@ -2,7 +2,9 @@ package checks
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
+	"os/exec"
 	"path/filepath"
 	"strings"
 
@@ -31,19 +33,13 @@ type CheckSet []Check
 
 // Result defines the results of executing a Check
 type Result struct {
-	Actual   string   `json:"actual"`
-	Expected Expected `json:"expected"`
-	Check    Check    `json:"check"`
+	Actual   string               `json:"actual"`
+	Expected expectations.Wrapper `json:"expected"`
+	Check    Check                `json:"check"`
 }
 
 // ResultSet defines a group of Results
 type ResultSet []Result
-
-// Expected defines a pluggable interface for matching desired state to actual
-type Expected interface {
-	Matches(string) bool
-	String() string
-}
 
 type loadCheckInput struct {
 	Dir string `json:"dir"`
@@ -74,7 +70,7 @@ func NewSet(relativeDirs []string) (CheckSet, error) {
 }
 
 func newSetFromDir(absoluteDir string) (CheckSet, error) {
-	prospectusDir = filepath.Join(absoluteDir, prospectusDirName)
+	prospectusDir := filepath.Join(absoluteDir, prospectusDirName)
 
 	fileObjs, err := ioutil.ReadDir(prospectusDir)
 	if err != nil {
@@ -86,7 +82,7 @@ func newSetFromDir(absoluteDir string) (CheckSet, error) {
 		file := filepath.Join(prospectusDir, fileObj.Name())
 		newSet, err := newSetFromFile(absoluteDir, file)
 		if err != nil {
-			return err
+			return CheckSet{}, err
 		}
 		cs = append(cs, newSet...)
 	}
@@ -133,7 +129,7 @@ func execProspectusFile(file, command string, input interface{}, output interfac
 
 // Execute returns the Results from a CheckSet by calling Execute on each Check
 func (cs CheckSet) Execute() ResultSet {
-	resultSet = make(ResultSet, len(cs))
+	resultSet := make(ResultSet, len(cs))
 	for index, item := range cs {
 		resultSet[index] = item.Execute()
 	}
@@ -147,10 +143,10 @@ func (c Check) Execute() Result {
 	if err != nil {
 		return Result{
 			Actual: "error",
-			Expected: expectations.New(expectations.Params{
+			Expected: expectations.Wrapper{
 				Type: "error",
 				Data: map[string]string{"msg": fmt.Sprintf("execution error: %s", err)},
-			}),
+			},
 			Check: c,
 		}
 	}
@@ -161,10 +157,11 @@ func (c Check) Execute() Result {
 func (rs ResultSet) Changed() ResultSet {
 	var newResultSet ResultSet
 	for _, item := range rs {
-		if !i.Matches() {
+		if !item.Matches() {
 			newResultSet = append(newResultSet, item)
 		}
 	}
+	return newResultSet
 }
 
 // Matches returns true if the Expected and Actual values of the Result match
@@ -173,12 +170,12 @@ func (r Result) Matches() bool {
 }
 
 // Json returns the ResultsSet as a marshalled JSON string
-func (rs ResultSet) Json() (string, err) {
+func (rs ResultSet) Json() (string, error) {
 	data, err := json.MarshalIndent(rs, "", "  ")
 	if err != nil {
 		return "", err
 	}
-	return string(data)
+	return string(data), nil
 }
 
 // String returns the ResultsSet as a human-readable string
@@ -188,7 +185,7 @@ func (rs ResultSet) String() string {
 		b.WriteString(item.String())
 		b.WriteString("\n")
 	}
-	output = b.String()
+	return b.String()
 }
 
 // String returns the Result as a human-readable string

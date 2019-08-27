@@ -41,7 +41,7 @@ func checkRunner(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	results, err := c.Execute()
+	results := c.Execute()
 	if err != nil {
 		return err
 	}

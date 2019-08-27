@@ -5,22 +5,24 @@ import (
 )
 
 type setExpectation struct {
-	expected []string
-	raw      string
+	expected  []string
+	separator string
+	raw       string
 }
 
-func newSetExpectation(data map[string]string) Expectation {
-	separator := data["separator"]
-	if separator == "" {
-		separator = ","
+// Load creates a new set expectation
+func (s *setExpectation) Load(data map[string]string) Expectation {
+	s.separator = data["separator"]
+	if s.separator == "" {
+		s.separator = ","
 	}
-	raw := data["expected"]
-	parts = strings.Split(raw, separator)
-	return setExpectation{expected: parts, raw: raw}
+	s.raw = data["expected"]
+	s.expected = strings.Split(s.raw, s.separator)
+	return s
 }
 
 // Matches returns true if the actual value exists in the expected set
-func (s setExpectation) Matches(actual string) bool {
+func (s *setExpectation) Matches(actual string) bool {
 	for _, item := range s.expected {
 		if item == actual {
 			return true
@@ -30,6 +32,6 @@ func (s setExpectation) Matches(actual string) bool {
 }
 
 // String returns the original string with separators intact
-func (s setExpectation) String() string {
+func (s *setExpectation) String() string {
 	return s.raw
 }
