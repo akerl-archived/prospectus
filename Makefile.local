@@ -1,2 +1,1 @@
-PACKAGE = prospectus-ng
-NAMESPACE = github.com/akerl
+PACKAGE = prospectus

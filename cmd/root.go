@@ -6,7 +6,7 @@ import (
 
 var rootCmd = &cobra.Command{
 	Use:           "prospectus",
-	Short:         "Tool and DSL for checking expected vs actual state",
+	Short:         "Tool to check for changes in expected vs. actual state",
 	SilenceUsage:  true,
 	SilenceErrors: true,
 }
