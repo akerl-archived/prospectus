@@ -17,8 +17,6 @@ const (
 
 // TODO: add timber logging
 // TODO: add parallelization
-// TODO: properly marshal Expected.String() in Json()
-// TODO: omit interpolated fields from json schema
 
 // Check defines a single check that is ready for execution
 type Check struct {
@@ -153,6 +151,15 @@ func (c Check) Execute() Result {
 	return r
 }
 
+// String returns the Result as a human-readable string
+func (c Check) String() string {
+	return fmt.Sprintf(
+		"%s::%s",
+		c.Dir,
+		c.Name,
+	)
+}
+
 // Changed filters a ResultSet to only Results which do not match
 func (rs ResultSet) Changed() ResultSet {
 	var newResultSet ResultSet
@@ -191,9 +198,8 @@ func (rs ResultSet) String() string {
 // String returns the Result as a human-readable string
 func (r Result) String() string {
 	return fmt.Sprintf(
-		"%s::%s: %s / %s",
-		r.Check.Dir,
-		r.Check.Name,
+		"%s: %s / %s",
+		r.Check,
 		r.Actual,
 		r.Expected.String(),
 	)
