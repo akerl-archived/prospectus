@@ -169,8 +169,8 @@ func (r Result) Matches() bool {
 	return r.Expected.Matches(r.Actual)
 }
 
-// Json returns the ResultsSet as a marshalled JSON string
-func (rs ResultSet) Json() (string, error) {
+// JSON returns the ResultsSet as a marshalled JSON string
+func (rs ResultSet) JSON() (string, error) {
 	data, err := json.MarshalIndent(rs, "", "  ")
 	if err != nil {
 		return "", err

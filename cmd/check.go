@@ -51,7 +51,7 @@ func checkRunner(cmd *cobra.Command, args []string) error {
 
 	var output string
 	if flagJSON {
-		output, err = results.Json()
+		output, err = results.JSON()
 		if err != nil {
 			return err
 		}

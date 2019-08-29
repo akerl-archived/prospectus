@@ -34,7 +34,7 @@ func (w Wrapper) String() string {
 	return w.expectation.String()
 }
 
-func (w Wrapper) load() {
+func (w *Wrapper) load() {
 	itemFunc, ok := types[w.Type]
 	if !ok {
 		itemFunc = types["error"]
