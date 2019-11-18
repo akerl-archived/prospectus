@@ -152,6 +152,7 @@ func execProspectusForResult(method string, c Check, input interface{}) Result {
 			Check: c,
 		}
 	}
+	r.Check = c
 	return r
 }
 
