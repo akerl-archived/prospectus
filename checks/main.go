@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/akerl/go-prospectus/expectations"
+	"github.com/akerl/prospectus/expectations"
 )
 
 const (
@@ -136,14 +136,18 @@ func (cs CheckSet) Execute() ResultSet {
 
 // Execute runs the Check and returns Results
 func (c Check) Execute() Result {
+	return execProspectusForResult("execute", c, c)
+}
+
+func execProspectusForResult(method string, c Check, input interface{}) Result {
 	r := Result{}
-	err := execProspectusFile(c.File, "execute", c, &r)
+	err := execProspectusFile(c.File, method, input, &r)
 	if err != nil {
 		return Result{
 			Actual: "error",
 			Expected: expectations.Wrapper{
 				Type: "error",
-				Data: map[string]string{"msg": fmt.Sprintf("execution error: %s", err)},
+				Data: map[string]string{"msg": fmt.Sprintf("%s error: %s", method, err)},
 			},
 			Check: c,
 		}
@@ -203,4 +207,9 @@ func (r Result) String() string {
 		r.Actual,
 		r.Expected.String(),
 	)
+}
+
+// Fix attempts to resolve a mismatched expectation
+func (r Result) Fix() Result {
+	return execProspectusForResult("fix", r.Check, r)
 }

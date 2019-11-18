@@ -9,5 +9,5 @@ item do
   noop
 
   extend ProspectusGolang::Deps.new
-  extend ProspectusTravis::Build.new('akerl/go-prospectus')
+  extend ProspectusTravis::Build.new('akerl/prospectus-ng')
 end

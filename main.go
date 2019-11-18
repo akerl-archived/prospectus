@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/akerl/go-prospectus/cmd"
+	"github.com/akerl/prospectus/cmd"
 )
 
 func main() {

@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/akerl/go-prospectus/checks"
+	"github.com/akerl/prospectus/checks"
 
 	"github.com/spf13/cobra"
 )
