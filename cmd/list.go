@@ -38,6 +38,9 @@ func listRunner(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+	if cs == nil {
+		cs = checks.CheckSet{}
+	}
 
 	var output strings.Builder
 	if flagJSON {
@@ -49,6 +52,7 @@ func listRunner(cmd *cobra.Command, args []string) error {
 	} else {
 		for _, item := range cs {
 			output.WriteString(item.String())
+			output.WriteString("\n")
 		}
 	}
 	fmt.Println(output.String())
