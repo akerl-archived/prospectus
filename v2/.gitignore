@@ -1,9 +1,0 @@
-/.gopath
-/bin
-/vendor/
-/pkg/
-/.github
-/payload.zip
-/.tools/
-/Dockerfile
-prospectus
