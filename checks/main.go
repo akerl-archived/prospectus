@@ -93,7 +93,7 @@ func newSetFromFile(dir, file string) (CheckSet, error) {
 	input := loadCheckInput{Dir: dir}
 	err := execProspectusFile(file, "load", input, &cs)
 	if err != nil {
-		return CheckSet{}, err
+		return CheckSet{}, fmt.Errorf("Failed loading %s: %s", file, err)
 	}
 	for index := range cs {
 		cs[index].Dir = dir
@@ -143,14 +143,7 @@ func execProspectusForResult(method string, c Check, input interface{}) Result {
 	r := Result{}
 	err := execProspectusFile(c.File, method, input, &r)
 	if err != nil {
-		return Result{
-			Actual: "error",
-			Expected: expectations.Wrapper{
-				Type: "error",
-				Data: map[string]string{"msg": fmt.Sprintf("%s error: %s", method, err)},
-			},
-			Check: c,
-		}
+		return NewErrorResult(fmt.Sprintf("%s error: %s", method, err), c)
 	}
 	r.Check = c
 	return r
@@ -213,4 +206,16 @@ func (r Result) String() string {
 // Fix attempts to resolve a mismatched expectation
 func (r Result) Fix() Result {
 	return execProspectusForResult("fix", r.Check, r)
+}
+
+// NewErrorResult creates an error result from a given string
+func NewErrorResult(msg string, c Check) Result {
+	return Result{
+		Actual: "error",
+		Expected: expectations.Wrapper{
+			Type: "error",
+			Data: map[string]string{"msg": msg},
+		},
+		Check: c,
+	}
 }
