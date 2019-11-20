@@ -1,0 +1,30 @@
+name 'prospectus'
+org 'akerl'
+
+source(
+  type: 'git',
+  path: '.'
+)
+
+build do
+  run 'make local'
+  cp 'bin'
+end
+
+package(
+  type: 'file',
+  artifacts: [
+    {
+      source: "bin/#{@forge.name}-ng_darwin",
+      name: "#{@forge.name}_darwin"
+    },
+    {
+      source: "bin/#{@forge.name}-ng_linux",
+      name: "#{@forge.name}_linux"
+    }
+  ]
+)
+
+test do
+  # TODO: add tests
+end
