@@ -70,7 +70,8 @@ type Result struct {
 // ResultSet defines a group of Results
 type ResultSet []Result
 
-type loadCheckInput struct {
+// LoadInput defines the input passed to a plugin to load checks
+type LoadInput struct {
 	Dir string `json:"dir"`
 }
 
