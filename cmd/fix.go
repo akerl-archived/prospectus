@@ -3,9 +3,8 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"strings"
 
-	"github.com/akerl/prospectus/checks"
+	"github.com/akerl/prospectus/plugin"
 
 	"github.com/spf13/cobra"
 )
@@ -34,45 +33,22 @@ func fixRunner(cmd *cobra.Command, args []string) error {
 		params = args
 	}
 
-	cs, err := checks.NewSet(params)
+	as, err := plugin.NewSet(params)
 	if err != nil {
 		return err
 	}
-	results := cs.Execute()
+	results := as.Check().Fix()
 
-	fixResults := map[string]checks.ResultSet{
-		"fixed":   {},
-		"unfixed": {},
-		"good":    {},
-	}
-	for _, item := range results {
-		if item.Matches() {
-			fixResults["good"] = append(fixResults["good"], item)
-		} else {
-			newResult := item.Fix()
-			if newResult.Matches() {
-				fixResults["fixed"] = append(fixResults["fixed"], newResult)
-			} else {
-				fixResults["unfixed"] = append(fixResults["unfixed"], newResult)
-			}
-		}
-	}
-
-	var output strings.Builder
+	var output string
 	if flagJSON {
-		outputBytes, err := json.MarshalIndent(fixResults, "", "  ")
+		outputBytes, err := json.MarshalIndent(results, "", "  ")
 		if err != nil {
 			return err
 		}
-		output.Write(outputBytes)
+		output = string(outputBytes)
 	} else {
-		for _, key := range []string{"good", "fixed", "unfixed"} {
-			output.WriteString(fmt.Sprintf("%s:\n", key))
-			for _, item := range fixResults[key] {
-				output.WriteString(fmt.Sprintf("  %s\n", item))
-			}
-		}
+		output = results.String()
 	}
-	fmt.Println(output.String())
+	fmt.Println(output)
 	return nil
 }

@@ -1,9 +1,10 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 
-	"github.com/akerl/prospectus/checks"
+	"github.com/akerl/prospectus/plugin"
 
 	"github.com/spf13/cobra"
 )
@@ -37,11 +38,11 @@ func checkRunner(cmd *cobra.Command, args []string) error {
 		params = args
 	}
 
-	c, err := checks.NewSet(params)
+	as, err := plugin.NewSet(params)
 	if err != nil {
 		return err
 	}
-	results := c.Execute()
+	results := as.Check()
 	if err != nil {
 		return err
 	}
@@ -51,10 +52,11 @@ func checkRunner(cmd *cobra.Command, args []string) error {
 
 	var output string
 	if flagJSON {
-		output, err = results.JSON()
+		outputBytes, err := json.MarshalIndent(results, "", "  ")
 		if err != nil {
 			return err
 		}
+		output = string(outputBytes)
 	} else {
 		output = results.String()
 	}

@@ -1,5 +1,10 @@
 package plugin
 
+import (
+	"io/ioutil"
+	"path/filepath"
+)
+
 const (
 	prospectusDirName = ".prospectus.d"
 )
@@ -10,74 +15,62 @@ type LoadInput struct {
 	File string `json:"file"`
 }
 
-func (l LoadInput) Load() CheckSet {
-	cs := CheckSet{}
-	err := call(input.File, "load", input, &cs)
+func (l LoadInput) Load() AttributeSet {
+	cs := AttributeSet{}
+	err := call(l.File, "load", l, &cs)
 	if err != nil {
-		cs = CheckSet{Check{Name: "__failure_to_load__"}}
+		cs = AttributeSet{Attribute{Name: "__failure_to_load__"}}
 	}
 	for index := range cs {
-		cs[index].Dir = input.Dir
-		cs[index].File = input.File
+		cs[index].Dir = l.Dir
+		cs[index].File = l.File
 	}
 	return cs
 }
 
-// NewSet returns a CheckSet based on a provided list of directories
-func NewSet(relativeDirs []string) (CheckSet, error) {
+// NewSet returns a AttributeSet based on a provided list of directories
+func NewSet(relativeDirs []string) (AttributeSet, error) {
 	var err error
 
 	dirs := make([]string, len(relativeDirs))
 	for index, item := range relativeDirs {
 		dirs[index], err = filepath.Abs(item)
 		if err != nil {
-			return CheckSet{}, err
+			return AttributeSet{}, err
 		}
 	}
 
-	var cs CheckSet
+	as := AttributeSet{}
 	for _, item := range dirs {
 		newSet, err := newSetFromDir(item)
 		if err != nil {
-			return CheckSet{}, err
+			return AttributeSet{}, err
 		}
-		cs = append(cs, newSet...)
+		as = append(as, newSet...)
 	}
 
-	return cs, nil
+	return as, nil
 }
 
-func newSetFromDir(absoluteDir string) (CheckSet, error) {
+func newSetFromDir(absoluteDir string) (AttributeSet, error) {
 	prospectusDir := filepath.Join(absoluteDir, prospectusDirName)
 
 	fileObjs, err := ioutil.ReadDir(prospectusDir)
 	if err != nil {
-		return CheckSet{}, err
+		return AttributeSet{}, err
 	}
 
-	var cs CheckSet
+	var as AttributeSet
 	for _, fileObj := range fileObjs {
 		file := filepath.Join(prospectusDir, fileObj.Name())
-		newSet, err := newSetFromFile(absoluteDir, file)
-		if err != nil {
-			return CheckSet{}, err
-		}
-		cs = append(cs, newSet...)
+		newSet := newSetFromFile(absoluteDir, file)
+		as = append(as, newSet...)
 	}
 
-	return cs, nil
+	return as, nil
 }
 
-func newSetFromFile(dir, file string) (CheckSet, error) {
-	cs := CheckSet{}
-	input := loadCheckInput{Dir: dir}
-	err := execProspectusFile(file, "load", input, &cs)
-	if err != nil {
-		return CheckSet{}, fmt.Errorf("Failed loading %s: %s", file, err)
-	}
-	for index := range cs {
-		cs[index].Dir = dir
-		cs[index].File = file
-	}
-	return cs, nil
+func newSetFromFile(dir, file string) AttributeSet {
+	input := LoadInput{Dir: dir, File: file}
+	return input.Load()
 }

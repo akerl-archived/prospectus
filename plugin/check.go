@@ -1,51 +1,56 @@
 package plugin
 
-// Check defines a single check that is ready for execution
-type Check struct {
+import (
+	"fmt"
+	"strings"
+)
+
+// Attribute defines a single check that is ready for execution
+type Attribute struct {
 	Dir      string            `json:"dir"`
 	File     string            `json:"file"`
 	Name     string            `json:"name"`
 	Metadata map[string]string `json:"metadata"`
 }
 
-// CheckSet defines a group of Checks
-type CheckSet []Check
+// AttributeSet defines a group of Attributes
+type AttributeSet []Attribute
 
 // String returns the Result as a human-readable string
-func (c Check) String() string {
+func (a Attribute) String() string {
 	return fmt.Sprintf(
 		"%s::%s",
-		c.Dir,
-		c.Name,
+		a.Dir,
+		a.Name,
 	)
 }
 
-// String returns the CheckSet as a human-readable string
-func (cs CheckSet) String() string {
+// String returns the AttributeSet as a human-readable string
+func (as AttributeSet) String() string {
 	var b strings.Builder
-	for _, item := range cs {
+	for _, item := range as {
 		b.WriteString(item.String())
 		b.WriteString("\n")
 	}
 	return b.String()
 }
 
-// Execute runs the Check and returns Results
-func (c Check) Execute() Result {
+// Execute runs the Attribute and returns Results
+func (a Attribute) Check() Result {
 	r := Result{}
-	err := call(c.File, "execute", c, &r)
+	err := call(a.File, "execute", a, &r)
 	if err != nil {
-		r = NewErrorResult(fmt.Sprintf("%s error: %s", method, err), c)
+		r = NewErrorResult(fmt.Sprintf("execution error: %s", err), a)
 	}
-	r.Check = c
+	r.Attribute = a
 	return r
 }
 
-// Execute returns the Results from a CheckSet by calling Execute on each Check
-func (cs CheckSet) Execute() ResultSet {
-	resultSet := make(ResultSet, len(cs))
-	for index, item := range cs {
-		resultSet[index] = item.Execute()
+// Execute returns the Results from a AttributeSet by calling Execute on each Attribute
+func (as AttributeSet) Check() ResultSet {
+	resultSet := make(ResultSet, len(as))
+	for index, item := range as {
+		resultSet[index] = item.Check()
 	}
 	return resultSet
 }

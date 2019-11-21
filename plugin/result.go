@@ -1,10 +1,17 @@
 package plugin
 
-// Result defines the results of executing a Check
+import (
+	"fmt"
+	"strings"
+
+	"github.com/akerl/prospectus/expectations"
+)
+
+// Result defines the results of executing a Attribute
 type Result struct {
-	Actual   string               `json:"actual"`
-	Expected expectations.Wrapper `json:"expected"`
-	Check    Check                `json:"check"`
+	Actual    string               `json:"actual"`
+	Expected  expectations.Wrapper `json:"expected"`
+	Attribute Attribute            `json:"check"`
 }
 
 // ResultSet defines a group of Results
@@ -14,7 +21,7 @@ type ResultSet []Result
 func (r Result) String() string {
 	return fmt.Sprintf(
 		"%s: %s / %s",
-		r.Check,
+		r.Attribute,
 		r.Actual,
 		r.Expected,
 	)
@@ -49,26 +56,35 @@ func (r Result) Matches() bool {
 // Fix attempts to resolve a mismatched expectation
 func (r Result) Fix() Result {
 	newResult := Result{}
-	err := call(r.Check.File, "fix", r, &newResult)
+	err := call(r.Attribute.File, "fix", r, &newResult)
 	if err != nil {
-		newResult = NewErrorResult(fmt.Sprintf("%s error: %s", method, err), r.Check)
+		newResult = NewErrorResult(fmt.Sprintf("fix error: %s", err), r.Attribute)
 	}
-	newResult.Check = c
+	newResult.Attribute = r.Attribute
 	return newResult
 }
 
 // Fix attempts to fix all results in a ResultSet
 func (rs ResultSet) Fix() ResultSet {
+	newResultSet := make(ResultSet, len(rs))
+	for index, item := range rs {
+		if item.Matches() {
+			newResultSet[index] = item
+		} else {
+			newResultSet[index] = item.Fix()
+		}
+	}
+	return newResultSet
 }
 
 // NewErrorResult creates an error result from a given string
-func NewErrorResult(msg string, c Check) Result {
+func NewErrorResult(msg string, c Attribute) Result {
 	return Result{
 		Actual: "error",
 		Expected: expectations.Wrapper{
 			Type: "error",
 			Data: map[string]string{"msg": msg},
 		},
-		Check: c,
+		Attribute: c,
 	}
 }

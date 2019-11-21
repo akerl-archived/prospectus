@@ -5,8 +5,6 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/akerl/prospectus/checks"
-
 	"github.com/ghodss/yaml"
 )
 
@@ -16,13 +14,13 @@ import (
 // Plugin defines a Golang plugin object for prospectus request handling
 type Plugin interface {
 	GetConfigPointer() interface{}
-	Load(checks.LoadInput) checks.CheckSet
-	Execute(checks.Check) checks.Result
-	Fix(checks.Result) checks.Result
+	Load(LoadInput) AttributeSet
+	Check(Attribute) Result
+	Fix(Result) Result
 }
 
-// Execute runs a plugin
-func Execute(p Plugin) error {
+// Start runs a plugin
+func Start(p Plugin) error {
 	if len(os.Args) != 3 {
 		return fmt.Errorf("Unexpected number of args provided: %d", len(os.Args))
 	}
@@ -31,27 +29,59 @@ func Execute(p Plugin) error {
 	subcommand := os.Args[2]
 
 	c := p.GetConfigPointer()
-	err := loadPluginConfig(c)
+	err := loadPluginConfig(configFile, c)
 	if err != nil {
+		return err
+	}
+
+	info, err := os.Stdin.Stat()
+	if err != nil {
+		return err
+	}
+
+	if info.Mode()&os.ModeNamedPipe != os.ModeNamedPipe || info.Size() <= 0 {
+		return fmt.Errorf("Plugin executed without stdin")
+	}
+
+	inputMsg, err := ioutil.ReadAll(os.Stdin)
+	if err != nil {
+		return err
+	}
+
+	var input interface{}
+	var output interface{}
+
+	switch subcommand {
+	case "load":
+		input = LoadInput{}
+	case "check":
+		input = Attribute{}
+	case "fix":
+		input = Result{}
+	default:
+		return fmt.Errorf("Unexpected command provided: %s", subcommand)
+	}
+
+	if err := ReadMessage(inputMsg, &input); err != nil {
 		return err
 	}
 
 	switch subcommand {
 	case "load":
-	case "execute":
+		output = p.Load(input.(LoadInput))
+	case "check":
+		output = p.Check(input.(Attribute))
 	case "fix":
-	default:
-		return fmt.Errorf("Unexpected command provided: %s", subcommand)
+		output = p.Fix(input.(Result))
 	}
+
+	outputMsg, err := WriteMessage(output)
+	fmt.Print(outputMsg)
+	return nil
 }
 
-func loadPluginConfig(output interface{}) error {
-	if len(os.Args) < 2 {
-		return fmt.Errorf("no config file path provided")
-	}
-	file := os.Args[1]
-
-	fileInfo, err := os.Stat(file)
+func loadPluginConfig(configFile string, output interface{}) error {
+	fileInfo, err := os.Stat(configFile)
 	if os.IsNotExist(err) {
 		return fmt.Errorf("config file does not exist")
 	}
@@ -59,6 +89,6 @@ func loadPluginConfig(output interface{}) error {
 		return fmt.Errorf("config file is a directory")
 	}
 
-	data, err := ioutil.ReadFile(file)
+	data, err := ioutil.ReadFile(configFile)
 	return yaml.Unmarshal(data, output)
 }
