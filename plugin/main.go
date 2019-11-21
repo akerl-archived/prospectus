@@ -10,6 +10,9 @@ import (
 	"github.com/ghodss/yaml"
 )
 
+// TODO: add timber logging
+// TODO: add parallelization
+
 // Plugin defines a Golang plugin object for prospectus request handling
 type Plugin interface {
 	GetConfigPointer() interface{}
