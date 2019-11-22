@@ -35,7 +35,7 @@ func ReadMessage(input []byte, output interface{}) error {
 		return err
 	}
 	if m.Version != apiVersion {
-		return fmt.Errorf("Plugin version mismatch: %s (expected) vs %s (actual)", apiVersion, m.Version)
+		return fmt.Errorf("Plugin version mismatch: %d (expected) vs %d (actual)", apiVersion, m.Version)
 	}
 	return json.Unmarshal(m.Contents, output)
 }
