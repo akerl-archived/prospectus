@@ -35,12 +35,12 @@ func (as AttributeSet) String() string {
 	return b.String()
 }
 
-// Execute runs the Attribute and returns Results
+// Check runs the Attribute and returns Results
 func (a Attribute) Check() Result {
 	r := Result{}
-	err := call(a.File, "execute", a, &r)
+	err := call(a.File, "check", a, &r)
 	if err != nil {
-		r = NewErrorResult(fmt.Sprintf("execution error: %s", err), a)
+		r = NewErrorResult(fmt.Sprintf("execution error: %s", err))
 	}
 	r.Attribute = a
 	return r

@@ -1,6 +1,7 @@
 package plugin
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"os/exec"
@@ -54,10 +55,15 @@ func call(file, command string, input interface{}, output interface{}) error {
 	stdin.Write(inputBytes)
 	stdin.Close()
 
-	stdout, err := cmd.Output()
+	var stdoutBytes bytes.Buffer
+	var stderrBytes bytes.Buffer
+
+	cmd.Stdout = &stdoutBytes
+	cmd.Stderr = &stderrBytes
+	err = cmd.Run()
 	if err != nil {
-		return err
+		return fmt.Errorf("%s: %s", err, stderrBytes)
 	}
 
-	return ReadMessage(stdout, output)
+	return ReadMessage(stdoutBytes.Bytes(), output)
 }

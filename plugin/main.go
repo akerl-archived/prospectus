@@ -5,11 +5,15 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/akerl/timber/v2/log"
 	"github.com/ghodss/yaml"
 )
 
-// TODO: add timber logging
 // TODO: add parallelization
+// TODO: add logging
+
+var mainLogger = log.NewLogger("prospectus")
+var pluginLogger = log.NewLogger("prospectus:plugin")
 
 // Plugin defines a Golang plugin object for prospectus request handling
 type Plugin interface {
@@ -48,35 +52,36 @@ func Start(p Plugin) error {
 		return err
 	}
 
-	var input interface{}
 	var output interface{}
 
 	switch subcommand {
 	case "load":
-		input = LoadInput{}
+		input := LoadInput{}
+		if err := ReadMessage(inputMsg, &input); err != nil {
+			return err
+		}
+		output = p.Load(input)
 	case "check":
-		input = Attribute{}
+		input := Attribute{}
+		if err := ReadMessage(inputMsg, &input); err != nil {
+			return err
+		}
+		output = p.Check(input)
 	case "fix":
-		input = Result{}
+		input := Result{}
+		if err := ReadMessage(inputMsg, &input); err != nil {
+			return err
+		}
+		output = p.Fix(input)
 	default:
 		return fmt.Errorf("Unexpected command provided: %s", subcommand)
 	}
 
-	if err := ReadMessage(inputMsg, &input); err != nil {
+	outputMsg, err := WriteMessage(output)
+	if err != nil {
 		return err
 	}
-
-	switch subcommand {
-	case "load":
-		output = p.Load(input.(LoadInput))
-	case "check":
-		output = p.Check(input.(Attribute))
-	case "fix":
-		output = p.Fix(input.(Result))
-	}
-
-	outputMsg, err := WriteMessage(output)
-	fmt.Print(outputMsg)
+	fmt.Print(string(outputMsg))
 	return nil
 }
 

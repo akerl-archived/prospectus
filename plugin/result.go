@@ -3,15 +3,14 @@ package plugin
 import (
 	"fmt"
 	"strings"
-
-	"github.com/akerl/prospectus/expectations"
 )
 
 // Result defines the results of executing a Attribute
 type Result struct {
-	Actual    string               `json:"actual"`
-	Expected  expectations.Wrapper `json:"expected"`
-	Attribute Attribute            `json:"check"`
+	Actual    string    `json:"actual"`
+	Expected  string    `json:"expected"`
+	Matches   bool      `json:matches`
+	Attribute Attribute `json:"attribute"`
 }
 
 // ResultSet defines a group of Results
@@ -41,16 +40,11 @@ func (rs ResultSet) String() string {
 func (rs ResultSet) Changed() ResultSet {
 	var newResultSet ResultSet
 	for _, item := range rs {
-		if !item.Matches() {
+		if !item.Matches {
 			newResultSet = append(newResultSet, item)
 		}
 	}
 	return newResultSet
-}
-
-// Matches returns true if the Expected and Actual values of the Result match
-func (r Result) Matches() bool {
-	return r.Expected.Matches(r.Actual)
 }
 
 // Fix attempts to resolve a mismatched expectation
@@ -58,7 +52,7 @@ func (r Result) Fix() Result {
 	newResult := Result{}
 	err := call(r.Attribute.File, "fix", r, &newResult)
 	if err != nil {
-		newResult = NewErrorResult(fmt.Sprintf("fix error: %s", err), r.Attribute)
+		newResult = NewErrorResult(fmt.Sprintf("fix error: %s", err))
 	}
 	newResult.Attribute = r.Attribute
 	return newResult
@@ -68,7 +62,7 @@ func (r Result) Fix() Result {
 func (rs ResultSet) Fix() ResultSet {
 	newResultSet := make(ResultSet, len(rs))
 	for index, item := range rs {
-		if item.Matches() {
+		if item.Matches {
 			newResultSet[index] = item
 		} else {
 			newResultSet[index] = item.Fix()
@@ -78,13 +72,10 @@ func (rs ResultSet) Fix() ResultSet {
 }
 
 // NewErrorResult creates an error result from a given string
-func NewErrorResult(msg string, c Attribute) Result {
+func NewErrorResult(msg string) Result {
 	return Result{
-		Actual: "error",
-		Expected: expectations.Wrapper{
-			Type: "error",
-			Data: map[string]string{"msg": msg},
-		},
-		Attribute: c,
+		Actual:   "error",
+		Expected: msg,
+		Matches:  false,
 	}
 }
