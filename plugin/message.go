@@ -16,7 +16,7 @@ type message struct {
 	Contents json.RawMessage `json:"contents"`
 }
 
-func WriteMessage(input interface{}) ([]byte, error) {
+func writeMessage(input interface{}) ([]byte, error) {
 	contents, err := json.Marshal(input)
 	if err != nil {
 		return []byte{}, err
@@ -28,14 +28,18 @@ func WriteMessage(input interface{}) ([]byte, error) {
 	return json.Marshal(m)
 }
 
-func ReadMessage(input []byte, output interface{}) error {
+func readMessage(input []byte, output interface{}) error {
 	var m message
 	err := json.Unmarshal(input, &m)
 	if err != nil {
 		return err
 	}
 	if m.Version != apiVersion {
-		return fmt.Errorf("Plugin version mismatch: %d (expected) vs %d (actual)", apiVersion, m.Version)
+		return fmt.Errorf(
+			"plugin version mismatch: %d (expected) vs %d (actual)",
+			apiVersion,
+			m.Version,
+		)
 	}
 	return json.Unmarshal(m.Contents, output)
 }
@@ -43,7 +47,7 @@ func ReadMessage(input []byte, output interface{}) error {
 func call(file, command string, input interface{}, output interface{}) error {
 	cmd := exec.Command(file, command)
 
-	inputBytes, err := WriteMessage(input)
+	inputBytes, err := writeMessage(input)
 	if err != nil {
 		return err
 	}
@@ -65,5 +69,5 @@ func call(file, command string, input interface{}, output interface{}) error {
 		return fmt.Errorf("%s: %s", err, stderrBytes.String())
 	}
 
-	return ReadMessage(stdoutBytes.Bytes(), output)
+	return readMessage(stdoutBytes.Bytes(), output)
 }

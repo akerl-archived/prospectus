@@ -25,8 +25,9 @@ type Plugin interface {
 
 // Start runs a plugin
 func Start(p Plugin) error {
-	if len(os.Args) != 3 {
-		return fmt.Errorf("Unexpected number of args provided: %d", len(os.Args))
+	err := preflightChecks(p)
+	if err != nil {
+		return err
 	}
 
 	configFile := os.Args[1]
@@ -36,15 +37,6 @@ func Start(p Plugin) error {
 	err := loadPluginConfig(configFile, c)
 	if err != nil {
 		return err
-	}
-
-	info, err := os.Stdin.Stat()
-	if err != nil {
-		return err
-	}
-
-	if info.Mode()&os.ModeNamedPipe != os.ModeNamedPipe || info.Size() <= 0 {
-		return fmt.Errorf("Plugin executed without stdin")
 	}
 
 	inputMsg, err := ioutil.ReadAll(os.Stdin)
@@ -57,32 +49,47 @@ func Start(p Plugin) error {
 	switch subcommand {
 	case "load":
 		input := LoadInput{}
-		if err := ReadMessage(inputMsg, &input); err != nil {
+		if err := readMessage(inputMsg, &input); err != nil {
 			return err
 		}
 		output = p.Load(input)
 	case "check":
 		input := Attribute{}
-		if err := ReadMessage(inputMsg, &input); err != nil {
+		if err := readMessage(inputMsg, &input); err != nil {
 			return err
 		}
 		output = p.Check(input)
 	case "fix":
 		input := Result{}
-		if err := ReadMessage(inputMsg, &input); err != nil {
+		if err := readMessage(inputMsg, &input); err != nil {
 			return err
 		}
 		output = p.Fix(input)
 	default:
-		return fmt.Errorf("Unexpected command provided: %s", subcommand)
+		return fmt.Errorf("unexpected command provided: %s", subcommand)
 	}
 
-	outputMsg, err := WriteMessage(output)
+	outputMsg, err := writeMessage(output)
 	if err != nil {
 		return err
 	}
 	fmt.Print(string(outputMsg))
 	return nil
+}
+
+func preflightChecks(p Plugin) error {
+	if len(os.Args) != 3 {
+		return fmt.Errorf("unexpected number of args provided: %d", len(os.Args))
+	}
+
+	info, err := os.Stdin.Stat()
+	if err != nil {
+		return err
+	}
+
+	if info.Mode()&os.ModeNamedPipe != os.ModeNamedPipe || info.Size() <= 0 {
+		return fmt.Errorf("plugin executed without stdin")
+	}
 }
 
 func loadPluginConfig(configFile string, output interface{}) error {

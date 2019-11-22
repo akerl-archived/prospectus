@@ -46,7 +46,7 @@ func (a Attribute) Check() Result {
 	return r
 }
 
-// Execute returns the Results from a AttributeSet by calling Execute on each Attribute
+// Check returns the Results from a AttributeSet by calling Execute on each Attribute
 func (as AttributeSet) Check() ResultSet {
 	resultSet := make(ResultSet, len(as))
 	for index, item := range as {

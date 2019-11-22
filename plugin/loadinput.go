@@ -15,6 +15,7 @@ type LoadInput struct {
 	File string `json:"file"`
 }
 
+// Load returns an AttributeSet for the provided directory/file
 func (l LoadInput) Load() AttributeSet {
 	cs := AttributeSet{}
 	err := call(l.File, "load", l, &cs)
