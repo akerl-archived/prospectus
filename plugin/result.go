@@ -9,7 +9,7 @@ import (
 type Result struct {
 	Actual    string    `json:"actual"`
 	Expected  string    `json:"expected"`
-	Matches   bool      `json:matches`
+	Matches   bool      `json:"matches"`
 	Attribute Attribute `json:"attribute"`
 }
 
@@ -36,19 +36,11 @@ func (rs ResultSet) String() string {
 	return b.String()
 }
 
-// Changed filters a ResultSet to only Results which do not match
-func (rs ResultSet) Changed() ResultSet {
-	var newResultSet ResultSet
-	for _, item := range rs {
-		if !item.Matches {
-			newResultSet = append(newResultSet, item)
-		}
-	}
-	return newResultSet
-}
-
 // Fix attempts to resolve a mismatched expectation
 func (r Result) Fix() Result {
+	if r.Matches {
+		return r
+	}
 	newResult := Result{}
 	err := call(r.Attribute.File, "fix", r, &newResult)
 	if err != nil {
@@ -62,11 +54,7 @@ func (r Result) Fix() Result {
 func (rs ResultSet) Fix() ResultSet {
 	newResultSet := make(ResultSet, len(rs))
 	for index, item := range rs {
-		if item.Matches {
-			newResultSet[index] = item
-		} else {
-			newResultSet[index] = item.Fix()
-		}
+		newResultSet[index] = item.Fix()
 	}
 	return newResultSet
 }

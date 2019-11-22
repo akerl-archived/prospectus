@@ -47,7 +47,13 @@ func checkRunner(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	if !flagAll {
-		results = results.Changed()
+		newResultSet := plugin.ResultSet{}
+		for _, item := range results {
+			if !item.Matches {
+				newResultSet = append(newResultSet, item)
+			}
+		}
+		results = newResultSet
 	}
 
 	var output string

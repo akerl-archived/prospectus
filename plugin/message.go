@@ -62,7 +62,7 @@ func call(file, command string, input interface{}, output interface{}) error {
 	cmd.Stderr = &stderrBytes
 	err = cmd.Run()
 	if err != nil {
-		return fmt.Errorf("%s: %s", err, stderrBytes)
+		return fmt.Errorf("%s: %s", err, stderrBytes.String())
 	}
 
 	return ReadMessage(stdoutBytes.Bytes(), output)
