@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/akerl/prospectus/plugin"
+	"github.com/akerl/prospectus/v2/plugin"
 
 	"github.com/spf13/cobra"
 )

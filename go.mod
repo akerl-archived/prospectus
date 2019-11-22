@@ -1,4 +1,4 @@
-module github.com/akerl/prospectus
+module github.com/akerl/prospectus/v2
 
 go 1.12
 
