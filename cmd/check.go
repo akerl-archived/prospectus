@@ -47,13 +47,7 @@ func checkRunner(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	if !flagAll {
-		newResultSet := plugin.ResultSet{}
-		for _, item := range results {
-			if !item.Matches {
-				newResultSet = append(newResultSet, item)
-			}
-		}
-		results = newResultSet
+		results = changedResults(results)
 	}
 
 	var output string
@@ -68,4 +62,14 @@ func checkRunner(cmd *cobra.Command, args []string) error {
 	}
 	fmt.Println(output)
 	return nil
+}
+
+func changedResults(rs plugin.ResultSet) plugin.ResultSet {
+	newResults := plugin.ResultSet{}
+	for _, item := range rs {
+		if !item.Matches {
+			newResults = append(newResults, item)
+		}
+	}
+	return newResults
 }

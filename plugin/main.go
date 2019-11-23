@@ -25,7 +25,7 @@ type Plugin interface {
 
 // Start runs a plugin
 func Start(p Plugin) error {
-	err := preflightChecks(p)
+	err := preflightChecks()
 	if err != nil {
 		return err
 	}
@@ -33,8 +33,7 @@ func Start(p Plugin) error {
 	configFile := os.Args[1]
 	subcommand := os.Args[2]
 
-	c := p.GetConfigPointer()
-	err := loadPluginConfig(configFile, c)
+	err = loadPluginConfig(configFile, p)
 	if err != nil {
 		return err
 	}
@@ -44,40 +43,50 @@ func Start(p Plugin) error {
 		return err
 	}
 
-	var output interface{}
-
-	switch subcommand {
-	case "load":
-		input := LoadInput{}
-		if err := readMessage(inputMsg, &input); err != nil {
-			return err
-		}
-		output = p.Load(input)
-	case "check":
-		input := Attribute{}
-		if err := readMessage(inputMsg, &input); err != nil {
-			return err
-		}
-		output = p.Check(input)
-	case "fix":
-		input := Result{}
-		if err := readMessage(inputMsg, &input); err != nil {
-			return err
-		}
-		output = p.Fix(input)
-	default:
-		return fmt.Errorf("unexpected command provided: %s", subcommand)
+	output, err := runSubcommand(subcommand, inputMsg, p)
+	if err != nil {
+		return err
 	}
 
 	outputMsg, err := writeMessage(output)
 	if err != nil {
 		return err
 	}
+
 	fmt.Print(string(outputMsg))
 	return nil
 }
 
-func preflightChecks(p Plugin) error {
+func runSubcommand(subcommand string, inputMsg []byte, p Plugin) (interface{}, error) {
+	var output interface{}
+
+	switch subcommand {
+	case "load":
+		input := LoadInput{}
+		if err := readMessage(inputMsg, &input); err != nil {
+			return output, err
+		}
+		output = p.Load(input)
+	case "check":
+		input := Attribute{}
+		if err := readMessage(inputMsg, &input); err != nil {
+			return output, err
+		}
+		output = p.Check(input)
+	case "fix":
+		input := Result{}
+		if err := readMessage(inputMsg, &input); err != nil {
+			return output, err
+		}
+		output = p.Fix(input)
+	default:
+		return output, fmt.Errorf("unexpected command provided: %s", subcommand)
+	}
+
+	return output, nil
+}
+
+func preflightChecks() error {
 	if len(os.Args) != 3 {
 		return fmt.Errorf("unexpected number of args provided: %d", len(os.Args))
 	}
@@ -90,9 +99,12 @@ func preflightChecks(p Plugin) error {
 	if info.Mode()&os.ModeNamedPipe != os.ModeNamedPipe || info.Size() <= 0 {
 		return fmt.Errorf("plugin executed without stdin")
 	}
+
+	return nil
 }
 
-func loadPluginConfig(configFile string, output interface{}) error {
+func loadPluginConfig(configFile string, p Plugin) error {
+	output := p.GetConfigPointer()
 	fileInfo, err := os.Stat(configFile)
 	if os.IsNotExist(err) {
 		return fmt.Errorf("config file does not exist")
