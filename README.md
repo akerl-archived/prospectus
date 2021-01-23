@@ -1,7 +1,7 @@
 prospectus
 =========
 
-[![Build Status](https://img.shields.io/travis/com/akerl/prospectus.svg)](https://travis-ci.com/akerl/prospectus)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/akerl/prospectus/Build)](https://github.com/akerl/prospectus/actions))
 [![GitHub release](https://img.shields.io/github/release/akerl/prospectus.svg)](https://github.com/akerl/prospectus/releases)
 [![MIT Licensed](https://img.shields.io/badge/license-MIT-green.svg)](https://tldrlegal.com/license/mit-license)
 
