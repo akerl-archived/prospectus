@@ -52,8 +52,6 @@ func call(file, command string, input interface{}, output interface{}) error {
 		return err
 	}
 
-	logger.DebugMsgf("plugin stdin: %s", inputBytes)
-
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
 		return err

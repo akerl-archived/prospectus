@@ -86,7 +86,6 @@ func runSubcommand(subcommand string, inputMsg []byte, p Plugin) (interface{}, e
 }
 
 func preflightChecks() error {
-	logger.DebugMsgf("plugin args: %+v", os.Args)
 	if len(os.Args) != 3 {
 		return fmt.Errorf("unexpected number of args provided: %d", len(os.Args))
 	}
