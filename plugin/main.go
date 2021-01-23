@@ -12,8 +12,7 @@ import (
 // TODO: add parallelization
 // TODO: add logging
 
-var mainLogger = log.NewLogger("prospectus")
-var pluginLogger = log.NewLogger("prospectus:plugin")
+var logger = log.NewLogger("prospectus")
 
 // Plugin defines a Golang plugin object for prospectus request handling
 type Plugin interface {
@@ -87,6 +86,7 @@ func runSubcommand(subcommand string, inputMsg []byte, p Plugin) (interface{}, e
 }
 
 func preflightChecks() error {
+	logger.DebugMsgf("plugin args: %+v", os.Args)
 	if len(os.Args) != 3 {
 		return fmt.Errorf("unexpected number of args provided: %d", len(os.Args))
 	}

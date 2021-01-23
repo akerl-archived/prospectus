@@ -20,6 +20,7 @@ func (l LoadInput) Load() AttributeSet {
 	cs := AttributeSet{}
 	err := call(l.File, "load", l, &cs)
 	if err != nil {
+		logger.DebugMsgf("error loading %s: %s", l.File, err)
 		cs = AttributeSet{Attribute{Name: "__failure_to_load__"}}
 	}
 	for index := range cs {
