@@ -1,10 +1,9 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
 
-	"github.com/akerl/prospectus/v2/plugin"
+	"github.com/akerl/prospectus/v3/runner"
 
 	"github.com/spf13/cobra"
 )
@@ -17,9 +16,7 @@ var checkCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(checkCmd)
-	f := checkCmd.Flags()
-	f.BoolP("all", "a", false, "Show all items, regardless of state")
-	f.Bool("json", false, "Print output as JSON")
+	checkCmd.Flags().BoolP("all", "a", false, "Show all items, regardless of state")
 }
 
 func checkRunner(cmd *cobra.Command, args []string) error {
@@ -28,44 +25,28 @@ func checkRunner(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	flagJSON, err := flags.GetBool("json")
-	if err != nil {
-		return err
-	}
 
-	params := []string{"."}
+	dirs := []string{"."}
 	if len(args) != 0 {
-		params = args
+		dirs = args
 	}
 
-	as, err := plugin.NewSet(params)
+	list, err := runner.NewSet(dirs)
 	if err != nil {
 		return err
 	}
+
 	results := as.Check()
-	if err != nil {
-		return err
-	}
 	if !flagAll {
 		results = changedResults(results)
 	}
 
-	var output string
-	if flagJSON {
-		outputBytes, err := json.MarshalIndent(results, "", "  ")
-		if err != nil {
-			return err
-		}
-		output = string(outputBytes)
-	} else {
-		output = results.String()
-	}
-	fmt.Println(output)
+	fmt.Println(results.String())
 	return nil
 }
 
-func changedResults(rs plugin.ResultSet) plugin.ResultSet {
-	newResults := plugin.ResultSet{}
+func changedResults(rs runner.Set) runner.Set {
+	newResults := runner.Set{}
 	for _, item := range rs {
 		if !item.Matches {
 			newResults = append(newResults, item)
