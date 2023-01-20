@@ -19,24 +19,19 @@ func init() {
 	checkCmd.Flags().BoolP("all", "a", false, "Show all items, regardless of state")
 }
 
-func checkRunner(cmd *cobra.Command, args []string) error {
+func checkRunner(cmd *cobra.Command, _ []string) error {
 	flags := cmd.Flags()
 	flagAll, err := flags.GetBool("all")
 	if err != nil {
 		return err
 	}
 
-	dirs := []string{"."}
-	if len(args) != 0 {
-		dirs = args
-	}
-
-	list, err := runner.NewSet(dirs)
+	rs, err := runner.New()
 	if err != nil {
 		return err
 	}
 
-	results := as.Check()
+	results := rs.Check()
 	if !flagAll {
 		results = changedResults(results)
 	}
@@ -45,10 +40,10 @@ func checkRunner(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func changedResults(rs runner.Set) runner.Set {
-	newResults := runner.Set{}
+func changedResults(rs runner.ResultSet) runner.ResultSet {
+	newResults := runner.ResultSet{}
 	for _, item := range rs {
-		if !item.Matches {
+		if !item.Matches() {
 			newResults = append(newResults, item)
 		}
 	}
