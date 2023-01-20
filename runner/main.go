@@ -29,8 +29,8 @@ type ResultSet []Result
 
 // Plugin defines a partial struct that captures plugin type
 type Plugin struct {
-	Type string `json:"type"`
-	json.RawMessage
+	Type string          `json:"type"`
+	Args json.RawMessage `json:"args"`
 }
 
 // Check defines a set of expected/actual plugins
@@ -84,7 +84,11 @@ func (p Plugin) Run() Value {
 	if err != nil {
 		return Value{Error: err}
 	}
-	stdin.Write(p.RawMessage)
+	if len(p.Args) == 0 {
+		stdin.Write([]byte("{}"))
+	} else {
+		stdin.Write(p.Args)
+	}
 	stdin.Close()
 
 	var stdoutBytes bytes.Buffer
@@ -94,10 +98,10 @@ func (p Plugin) Run() Value {
 	cmd.Stderr = &stderrBytes
 	err = cmd.Run()
 	if err != nil {
-		return Value{Error: fmt.Errorf("%s: %s", err, stderrBytes.String())}
+		return Value{Error: fmt.Errorf("%s: %s", err, strings.TrimSpace(stderrBytes.String()))}
 	}
 
-	return Value{Output: stdoutBytes.String()}
+	return Value{Output: strings.TrimSpace(stdoutBytes.String())}
 }
 
 // Matches checks if a result ran successfully and if its expected and actual values match
