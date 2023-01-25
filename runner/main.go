@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"strings"
 
+	"github.com/akerl/prospectus/v3/plugin"
 	"github.com/ghodss/yaml"
 )
 
@@ -31,12 +32,47 @@ type ResultSet []Result
 type Plugin struct {
 	Type string          `json:"type"`
 	Args json.RawMessage `json:"args"`
+	Meta plugin.Meta     `json:"-"`
 }
 
 // Check defines a set of expected/actual plugins
 type Check struct {
-	Expected Plugin `json:"expected"`
-	Actual   Plugin `json:"actual"`
+	Type           string          `json:"type"`
+	Args           json.RawMessage `json:"args"`
+	ExpectedPlugin Plugin          `json:"expected"`
+	ActualPlugin   Plugin          `json:"actual"`
+}
+
+// Expected returns either the merged plugin or expected plugin
+func (c *Check) Expected() Plugin {
+	meta := plugin.Meta{
+		Mode: plugin.Expected,
+	}
+	if c.Type == "" {
+		c.ExpectedPlugin.Meta = meta
+		return c.ExpectedPlugin
+	}
+	return Plugin{
+		Type: c.Type,
+		Args: c.Args,
+		Meta: meta,
+	}
+}
+
+// Actual returns either the merged plugin or actual plugin
+func (c *Check) Actual() Plugin {
+	meta := plugin.Meta{
+		Mode: plugin.Actual,
+	}
+	if c.Type == "" {
+		c.ActualPlugin.Meta = meta
+		return c.ActualPlugin
+	}
+	return Plugin{
+		Type: c.Type,
+		Args: c.Args,
+		Meta: meta,
+	}
 }
 
 // Runner defines a set of named Checks
@@ -63,8 +99,8 @@ func (r Runner) Check() ResultSet {
 
 	for name, check := range r.Items {
 		res := Result{Name: name}
-		res.Expected = check.Expected.Run()
-		res.Actual = check.Actual.Run()
+		res.Expected = check.Expected().Run()
+		res.Actual = check.Actual().Run()
 		rs = append(rs, res)
 	}
 
@@ -84,11 +120,13 @@ func (p Plugin) Run() Value {
 	if err != nil {
 		return Value{Error: err}
 	}
-	if len(p.Args) == 0 {
-		stdin.Write([]byte("{}"))
-	} else {
-		stdin.Write(p.Args)
+
+	pi := plugin.Input{
+		Meta: p.Meta,
+		Args: p.Args,
 	}
+	input, err := json.Marshal(pi)
+	stdin.Write(input)
 	stdin.Close()
 
 	var stdoutBytes bytes.Buffer
